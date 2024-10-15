@@ -13,7 +13,7 @@ from upsetplot import UpSet, plot, from_memberships
 import pickle
 from sklearn.decomposition import SparsePCA
 
-class condPCA(object):
+class residPCA(object):
     def __init__(self, 
                  count_matrix_path, 
                  object_columns, 
@@ -23,11 +23,11 @@ class condPCA(object):
                  n_PCs=200, 
                  random_seed=9989999, 
                  vargenes_IterPCA="all", 
-                 vargenes_Stand_Cond="all", 
+                 vargenes_Stand_resid="all", 
                  BIC=True, 
                  save_image_outputs = False, 
                  path_to_directory = "./", 
-                 basename=f'CondPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}',  
+                 basename=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}',  
                  global_ct_cutoff=0.2,
                  logged=False,
                  sparse_PCA=False):
@@ -64,18 +64,18 @@ class condPCA(object):
                 
         count_matrix = scanpy.read(count_matrix_path) # cells x genes, pd.read_csv(count_matrix_path, sep='\t', header=0, index_col=0)
         
-        self.vargenes_Stand_Cond = vargenes_Stand_Cond # number of variable genes for standard and conditional pca
-        if self.vargenes_Stand_Cond == "all": # if all, make all genes are variable genes
+        self.vargenes_Stand_resid = vargenes_Stand_resid # number of variable genes for standard and residpca
+        if self.vargenes_Stand_resid == "all": # if all, make all genes are variable genes
             count_matrix.var['highly_variable'] = True
             print("added column")
         else:
             if self.var_flavor == "seurat_v3":
                 try:
                     print("Finding most variable genes using 'seurat_v3' flavor.")
-                    scanpy.pp.highly_variable_genes(count_matrix, flavor='seurat_v3', n_top_genes=vargenes_Stand_Cond)
+                    scanpy.pp.highly_variable_genes(count_matrix, flavor='seurat_v3', n_top_genes=vargenes_Stand_resid)
                 except Exception as e:
                     print(f"An error occurred: {e}")
-                    print("Using 'seurat' flavor instead to compute variable genes on Standard and Conditional PCA.")
+                    print("Using 'seurat' flavor instead to compute variable genes on Standard PCA and residPCA.")
                     self.exception = True
             else:
                 pass
@@ -124,7 +124,7 @@ class condPCA(object):
 
     def Normalize(self):
         """ 
-        Normalize and take log1p of count data (for conditional and standard, not iterative)
+        Normalize and take log1p of count data (for residPCA and standard PCA, not iterative)
         """
         # check if any rows or columns sum to 0 and throw error if so
         if np.any(self.count_matrix.X.sum(axis=1) == 0):
@@ -143,7 +143,7 @@ class condPCA(object):
         # check whether alternative form of finding variable genes is necessary
         if hasattr(self, 'exception') and self.exception == True or self.var_flavor == "seurat":
             print("Finding most variable genes using 'seurat' flavor.")
-            scanpy.pp.highly_variable_genes(self.count_matrix, n_top_genes=self.vargenes_Stand_Cond)
+            scanpy.pp.highly_variable_genes(self.count_matrix, n_top_genes=self.vargenes_Stand_resid)
         self.count_matrix = self.count_matrix[:, self.count_matrix.var['highly_variable']] 
 
         # plot mean variance relationship if specified by user
@@ -153,7 +153,7 @@ class condPCA(object):
 
     def Standardize(self):
         """ 
-        Standardize count data AND metadata (for conditional and standard, not iterative)
+        Standardize count data AND metadata (for residPCA and Standard PCA, not iterative)
         """
         # Standardize count data
         # if some genes in counts matrix have zero standard deviation
@@ -196,7 +196,7 @@ class condPCA(object):
         standardized_residual = self._standardize(residual)
         return standardized_residual
     
-    def _fit_pca(self, mat, standardPCA, condPCA, iterPCA, iterPCA_genenames, iterPCA_cellnames, iterPCA_CT): # fitting PCA
+    def _fit_pca(self, mat, standardPCA, residPCA, iterPCA, iterPCA_genenames, iterPCA_cellnames, iterPCA_CT): # fitting PCA
         if self.sparse_PCA:
             # instantiate PCA with hyperparameters
             pca = SparsePCA(n_components=self.n_PCs, random_state=self.random_seed) 
@@ -220,7 +220,7 @@ class condPCA(object):
             cell_embeddings = pd.DataFrame(cell_embeddings, index = list(iterPCA_cellnames), columns = [f'PC_{i}' for i in range(1, (cell_embeddings.shape[1]+1))])
         # convert eigenvalues to dataframe
         eigenvalues = pd.DataFrame(eigenvalues, index = [f'PC_{i}' for i in range(1, (eigenvalues.shape[0]+1))], columns=["Eigenvalues"])
-        # if Standard or Conditional PCA, construct dataframes based on gene and cell list from original count matrix
+        # if Standard or residPCA, construct dataframes based on gene and cell list from original count matrix
         if not iterPCA: 
             # convert gene loadings to dataframe
             gene_loadings = pd.DataFrame(gene_loadings.T, index = list(self.count_matrix.var_names[self.count_matrix.var['highly_variable']] ), columns = [f'PC_{i}' for i in range(1, (gene_loadings.T.shape[1]+1))])               
@@ -231,10 +231,10 @@ class condPCA(object):
                 # compute BIC
                 min_BIC_index = self._compute_BIC(eigenvalues, self.standardized_residual, "Standard PCA")
                 elbow_PC = self._compute_elbow(eigenvalues, self.standardized_residual, "Standard PCA")
-            if condPCA:
+            if residPCA:
                 # compute BIC
-                min_BIC_index = self._compute_BIC(eigenvalues, self.standardized_residual, "CondPCA")
-                elbow_PC = self._compute_elbow(eigenvalues, self.standardized_residual, "CondPCA")
+                min_BIC_index = self._compute_BIC(eigenvalues, self.standardized_residual, "residPCA")
+                elbow_PC = self._compute_elbow(eigenvalues, self.standardized_residual, "residPCA")
             if iterPCA:
                 # compute BIC
                 min_BIC_index = self._compute_BIC(eigenvalues, self.standardized_residual, "IterPCA", iterPCA_CT)
@@ -243,7 +243,7 @@ class condPCA(object):
             return cell_embeddings, gene_loadings, eigenvalues, BIC_cutoff, elbow_PC
         return cell_embeddings, gene_loadings, eigenvalues, "Not Calculated", "Not Calculated"
     
-    def _fit_model(self, standardized_metadata, standardized_count_data, standardPCA=False, condPCA = False, iterPCA=False, iterPCA_genenames=False, iterPCA_cellnames=False, iterPCA_CT=False): # regress out covariates and then input into PCA
+    def _fit_model(self, standardized_metadata, standardized_count_data, standardPCA=False, residPCA = False, iterPCA=False, iterPCA_genenames=False, iterPCA_cellnames=False, iterPCA_CT=False): # regress out covariates and then input into PCA
         
         if standardized_metadata is not False: # if there is metadata to regress out
             # regress out covariates (including celltype) and retrieve standardized residual
@@ -260,7 +260,7 @@ class condPCA(object):
             self.standardized_residual = pd.DataFrame(self.standardized_residual, index = list(iterPCA_cellnames), columns = list(iterPCA_genenames))# REMOVE SELF   
         
         # perform PCA on count matrix
-        return self._fit_pca(self.standardized_residual, standardPCA=standardPCA, condPCA=condPCA, iterPCA=iterPCA, iterPCA_genenames=iterPCA_genenames, iterPCA_cellnames=iterPCA_cellnames, iterPCA_CT=iterPCA_CT)
+        return self._fit_pca(self.standardized_residual, standardPCA=standardPCA, residPCA=residPCA, iterPCA=iterPCA, iterPCA_genenames=iterPCA_genenames, iterPCA_cellnames=iterPCA_cellnames, iterPCA_CT=iterPCA_CT)
 
     def _mapping_IterPCA_subset_dataframes_to_PCA(self, metadata, CT_exp_column): # function that subsets count matrix to a particular cell type and then performs PCA on that subset
         # remove "celltype_" from the string CT_exp_column
@@ -352,12 +352,12 @@ class condPCA(object):
         checking = output + (pd.DataFrame(log_norm_data_subset_to_CT, index = list(cellnames), columns = list(genenames)),)# remove FOR CHECKING
         return output #checking## can remove final addition FOR CHECKING
     
-    def CondPCA_fit(self): 
+    def residPCA_fit(self): 
         if self.metadata is not False:     
             # fit linear model (regress out covariates) and fit PCA -- covariates contain cell type
-            self.CondPCA_cell_embeddings, self.CondPCA_gene_loadings, self.CondPCA_eigenvalues, self.CondPCA_BIC_cutoff, self.CondPCA_elbow = self._fit_model(standardized_metadata=self.standardized_metadata,standardized_count_data= self.standardized_count_data, condPCA = True)
+            self.residPCA_cell_embeddings, self.residPCA_gene_loadings, self.residPCA_eigenvalues, self.residPCA_BIC_cutoff, self.residPCA_elbow = self._fit_model(standardized_metadata=self.standardized_metadata,standardized_count_data= self.standardized_count_data, residPCA = True)
         else: 
-            raise ValueError("Cannot perform Conditional PCA. No celltype column specified in metadata")
+            raise ValueError("Cannot perform residPCA. No celltype column specified in metadata")
 
     def StandardPCA_fit(self):
         if self.metadata is not False: # if there is metadata to regress out
@@ -524,7 +524,7 @@ class condPCA(object):
                 df.loc[col1, col2] = np.corrcoef(df1[col1], df2[col2])[0,1]
         return df
 
-    # function that accepts a Standard/CondPCA gene loadings dataframe and dictionary of IterPCA gene loadings dataframes and returns the squared correlation between the Standard/CondPCA gene loadings dataframe and each of the IterPCA gene loadings dataframes in the dictionary
+    # function that accepts a Standard/residPCA gene loadings dataframe and dictionary of IterPCA gene loadings dataframes and returns the squared correlation between the Standard/residPCA gene loadings dataframe and each of the IterPCA gene loadings dataframes in the dictionary
     def _compute_squared_correlation_w_iterative(self, gene_loadings, gene_loadings_dict):       
         # initialize empty dataframe to store results
         squared_correlations = pd.DataFrame(index=gene_loadings.columns, columns=gene_loadings_dict.keys())
@@ -536,15 +536,15 @@ class condPCA(object):
             gene_loadings_dict_sub = gene_loadings_dict[celltype].loc[intersecting_gene_names,]
             # compute correlation between the two dataframes and square it
             corr = self._compute_correlation(gene_loadings_sub, gene_loadings_dict_sub)**2
-            # find the maximum correlation for each row, this will compute the maximum correlation in each PC of Standard of CondPCA
+            # find the maximum correlation for each row, this will compute the maximum correlation in each PC of Standard of residPCA
             max_corr = corr.max(axis=1)
             # append squared correlation to dataframe
             squared_correlations[celltype] = max_corr
         # return the list of squared correlations
         return squared_correlations
     
-    # function that accepts Standard/CondPCA gene loadings dataframe and depending on order, outputs a dataframe of the cross correlation between those two datasets, the first argument will retain its dimensionality in number of PCs
-    def _compute_squared_correlation_w_StandCond(self, gene_loadings1, gene_loadings2, gene_loadings2_label):
+    # function that accepts Standard/residPCA gene loadings dataframe and depending on order, outputs a dataframe of the cross correlation between those two datasets, the first argument will retain its dimensionality in number of PCs
+    def _compute_squared_correlation_w_Standresid(self, gene_loadings1, gene_loadings2, gene_loadings2_label):
         # initialize empty dataframe to store results
         squared_correlations = pd.DataFrame(index=gene_loadings1.columns, columns=[gene_loadings2_label])
         # computing intersecting genes between two dataframes and subset both dataframes by those genes
@@ -553,7 +553,7 @@ class condPCA(object):
         gene_loadings2_sub = gene_loadings2.loc[intersecting_gene_names,]
         # compute correlation between the two dataframes and square it
         corr = self._compute_correlation(gene_loadings1_sub, gene_loadings2_sub)**2
-        # find the maximum correlation for each row, this will compute the maximum correlation in each PC of Standard of CondPCA
+        # find the maximum correlation for each row, this will compute the maximum correlation in each PC of Standard of residPCA
         squared_correlations[gene_loadings2_label] = corr.max(axis=1)
         return squared_correlations
     
@@ -572,7 +572,7 @@ class condPCA(object):
         plt.savefig(f'{self.directory_path}/heatmap_squared_correlations_betw_{PCA_type.replace(" ", "")}_and_IterPCA.png')
         plt.close()
 
-    def _label_Global_CellType_States(self, df_squared_correlations, standard_or_conditional):
+    def _label_Global_CellType_States(self, df_squared_correlations, standard_or_resid):
         # Goal: add CT_involved column, which tells you which cell types are involved in a state and Global_vs_CT column, which tells you if the state global or cell type specific
         # obtain boolean of where squared correlation is greater than cutoff
         greater_than_cutoff = df_squared_correlations > self.global_ct_cutoff
@@ -582,7 +582,7 @@ class condPCA(object):
         sum_rows_greater_than_cutoff = sum_rows_greater_than_cutoff.copy()
 
         # Create a new array of labels based on conditions
-        state_labels = np.where(sum_rows_greater_than_cutoff == 0, f'{standard_or_conditional}-Only State',
+        state_labels = np.where(sum_rows_greater_than_cutoff == 0, f'{standard_or_resid}-Only State',
                         np.where(sum_rows_greater_than_cutoff == greater_than_cutoff.shape[1], "All Cell Types State", "Cell Type Specific State"))
         # Function to find columns with True values in each row
         def true_columns(row):
@@ -594,9 +594,9 @@ class condPCA(object):
         return output
     
     # Calculate proportions global vs ct specific
-    def _calc_prop(self,df, conditional_or_standard):
+    def _calc_prop(self,df, resid_or_standard):
         proportions = df['Global_vs_CT'].value_counts(normalize=True).to_frame(name='Proportion')
-        proportions.columns =  [conditional_or_standard + ' PCA']
+        proportions.columns =  [resid_or_standard + ' PCA']
         return proportions
     
     # Plot proportions global vs ct specific
@@ -640,66 +640,66 @@ class condPCA(object):
         # subset to BIC cutoff if dataset is present
         if hasattr(self, 'StandardPCA_gene_loadings'):
             standard_gene_loadings_sub_BIC = self._sub_dataframe_BIC(self.StandardPCA_gene_loadings, self.StandardPCA_BIC_cutoff)
-        if hasattr(self, 'CondPCA_gene_loadings'):
-            cond_gene_loadings_sub_BIC = self._sub_dataframe_BIC(self.CondPCA_gene_loadings, self.CondPCA_BIC_cutoff)
+        if hasattr(self, 'residPCA_gene_loadings'):
+            resid_gene_loadings_sub_BIC = self._sub_dataframe_BIC(self.residPCA_gene_loadings, self.residPCA_BIC_cutoff)
         if hasattr(self, 'IterPCA_gene_loadings'):
                 iter_gene_loadings_sub_BIC = {}
                 for celltype in self.IterPCA_gene_loadings.keys():
                     iter_gene_loadings_sub_BIC[celltype] = self._sub_dataframe_BIC(self.IterPCA_gene_loadings[celltype], self.IterPCA_BIC_cutoff[celltype])  
 
         # compute cross correlations
-        if hasattr(self, 'StandardPCA_gene_loadings') and hasattr(self, 'CondPCA_gene_loadings') and hasattr(self, 'IterPCA_gene_loadings'):
-            # if Standard, Conditional, and Iterative exist
+        if hasattr(self, 'StandardPCA_gene_loadings') and hasattr(self, 'residPCA_gene_loadings') and hasattr(self, 'IterPCA_gene_loadings'):
+            # if Standard PCA, residPCA, and Iterative exist
             
             # compute the squared correlation between the gene loadings for standard PCA and the gene loadings for each cell type
             StandardPCA_IterPCA_squared_correlations = self._compute_squared_correlation_w_iterative(standard_gene_loadings_sub_BIC, iter_gene_loadings_sub_BIC).apply(pd.to_numeric, errors='coerce') # RENAME MORAB
 
-            # compute the squared correlation between the gene loadings for standard PCA and the gene conditional PCA
-            StandardPCA_CondPCA_squared_correlations = self._compute_squared_correlation_w_StandCond(standard_gene_loadings_sub_BIC, cond_gene_loadings_sub_BIC, "CondPCA").apply(pd.to_numeric, errors='coerce')
+            # compute the squared correlation between the gene loadings for standard PCA and the gene loadings in residPCA
+            StandardPCA_residPCA_squared_correlations = self._compute_squared_correlation_w_Standresid(standard_gene_loadings_sub_BIC, resid_gene_loadings_sub_BIC, "residPCA").apply(pd.to_numeric, errors='coerce')
 
             # combine standard correlations into one dataframe
-            StandardPCA_correlations = pd.concat([StandardPCA_IterPCA_squared_correlations, StandardPCA_CondPCA_squared_correlations], axis=1)
+            StandardPCA_correlations = pd.concat([StandardPCA_IterPCA_squared_correlations, StandardPCA_residPCA_squared_correlations], axis=1)
 
 
             # compute the squared correlation between the gene loadings for standard PCA and the gene loadings for each cell type
-            CondPCA_IterPCA_squared_correlations = self._compute_squared_correlation_w_iterative(cond_gene_loadings_sub_BIC, iter_gene_loadings_sub_BIC).apply(pd.to_numeric, errors='coerce')
+            residPCA_IterPCA_squared_correlations = self._compute_squared_correlation_w_iterative(resid_gene_loadings_sub_BIC, iter_gene_loadings_sub_BIC).apply(pd.to_numeric, errors='coerce')
 
-            # compute the squared correlation between the gene loadings for conditional PCA and the gene loadings for standard PCA
-            CondPCA_StandardPCA_squared_correlations = self._compute_squared_correlation_w_StandCond(cond_gene_loadings_sub_BIC, standard_gene_loadings_sub_BIC, "StandardPCA").apply(pd.to_numeric, errors='coerce')
+            # compute the squared correlation between the gene loadings for residPCA and the gene loadings for standard PCA
+            residPCA_StandardPCA_squared_correlations = self._compute_squared_correlation_w_Standresid(resid_gene_loadings_sub_BIC, standard_gene_loadings_sub_BIC, "StandardPCA").apply(pd.to_numeric, errors='coerce')
 
-            # combine conditional correlations into one dataframe
-            CondPCA_correlations = pd.concat([CondPCA_IterPCA_squared_correlations, CondPCA_StandardPCA_squared_correlations], axis=1)
+            # combine residPCA correlations into one dataframe
+            residPCA_correlations = pd.concat([residPCA_IterPCA_squared_correlations, residPCA_StandardPCA_squared_correlations], axis=1)
 
             # label states with their corresponding cell type
-            self.StandardPCA_correlations = pd.merge(StandardPCA_correlations, self._label_Global_CellType_States(StandardPCA_correlations.drop(["CondPCA", ], axis=1), "Standard"), left_index=True, right_index=True)
-            self.CondPCA_correlations = pd.merge(CondPCA_correlations, self._label_Global_CellType_States(CondPCA_correlations.drop(["StandardPCA", ], axis=1), "Conditional"), left_index=True, right_index=True) 
+            self.StandardPCA_correlations = pd.merge(StandardPCA_correlations, self._label_Global_CellType_States(StandardPCA_correlations.drop(["residPCA", ], axis=1), "Standard"), left_index=True, right_index=True)
+            self.residPCA_correlations = pd.merge(residPCA_correlations, self._label_Global_CellType_States(residPCA_correlations.drop(["StandardPCA", ], axis=1), "residPCA"), left_index=True, right_index=True) 
 
             # COMPUTE IMAGE OUTPUTS
             if self.save_image_outputs:
                 # plot heatmaps
                 self._plot_heatmap_global_ct_specific(StandardPCA_correlations, "StandardPCA")
-                self._plot_heatmap_global_ct_specific(CondPCA_correlations, "CondPCA")
+                self._plot_heatmap_global_ct_specific(residPCA_correlations, "residPCA")
                 # Calculate proportions global vs ct specific states
-                standard_prop = self._calc_prop(self.StandardPCA_correlations.drop(["CondPCA", ], axis=1), "Standard")
-                conditional_prop = self._calc_prop(self.CondPCA_correlations.drop(["StandardPCA", ], axis=1), "Conditional")
+                standard_prop = self._calc_prop(self.StandardPCA_correlations.drop(["residPCA", ], axis=1), "Standard")
+                resid_prop = self._calc_prop(self.residPCA_correlations.drop(["StandardPCA", ], axis=1), "residPCA")
                 # Outer combine DataFrames and impute 0 for missing values
-                combined_prop = pd.merge(standard_prop, conditional_prop, left_index=True, right_index=True, how='outer').fillna(0)
+                combined_prop = pd.merge(standard_prop, resid_prop, left_index=True, right_index=True, how='outer').fillna(0)
                 self._prop_plot(combined_prop)
                 # also make Upset plots
-                self._Upset(self.StandardPCA_correlations.drop(["CondPCA", ], axis=1), "Standard")
-                self._Upset(self.CondPCA_correlations.drop(["StandardPCA", ], axis=1), "Conditional")
+                self._Upset(self.StandardPCA_correlations.drop(["residPCA", ], axis=1), "Standard")
+                self._Upset(self.residPCA_correlations.drop(["StandardPCA", ], axis=1), "residPCA")
                 self._plot_KDE(StandardPCA_IterPCA_squared_correlations, PCA_type="Standard PCA")
-                self._plot_KDE(CondPCA_IterPCA_squared_correlations, PCA_type="Conditional PCA")        
+                self._plot_KDE(residPCA_IterPCA_squared_correlations, PCA_type="residPCA")        
                 
 
-        elif hasattr(self, 'StandardPCA_gene_loadings') and hasattr(self, 'CondPCA_gene_loadings'):
-            # if only standard and conditional exist
+        elif hasattr(self, 'StandardPCA_gene_loadings') and hasattr(self, 'residPCA_gene_loadings'):
+            # if only standard and residPCA exist
             
-            # compute the squared correlation between the gene loadings for standard PCA and the gene conditional PCA
-            self.StandardPCA_correlations = self._compute_squared_correlation_w_StandCond(standard_gene_loadings_sub_BIC, cond_gene_loadings_sub_BIC, "CondPCA").apply(pd.to_numeric, errors='coerce')
+            # compute the squared correlation between the gene loadings for standard PCA and the gene residPCA
+            self.StandardPCA_correlations = self._compute_squared_correlation_w_Standresid(standard_gene_loadings_sub_BIC, resid_gene_loadings_sub_BIC, "residPCA").apply(pd.to_numeric, errors='coerce')
             
-            # compute the squared correlation between the gene loadings for conditional PCA and the gene loadings for standard PCA
-            self.CondPCA_correlations = self._compute_squared_correlation_w_StandCond(cond_gene_loadings_sub_BIC, standard_gene_loadings_sub_BIC, "StandardPCA").apply(pd.to_numeric, errors='coerce')
+            # compute the squared correlation between the gene loadings for resid PCA and the gene loadings for standard PCA
+            self.residPCA_correlations = self._compute_squared_correlation_w_Standresid(resid_gene_loadings_sub_BIC, standard_gene_loadings_sub_BIC, "StandardPCA").apply(pd.to_numeric, errors='coerce')
             
         elif hasattr(self, 'StandardPCA_gene_loadings') and hasattr(self, 'IterPCA_gene_loadings'):
             # if only standard and iterative exist
@@ -721,32 +721,32 @@ class condPCA(object):
                 self._Upset(self.StandardPCA_correlations, "Standard")
                 self._plot_KDE(StandardPCA_IterPCA_squared_correlations, PCA_type="Standard PCA")
 
-        elif hasattr(self, 'CondPCA_gene_loadings') and hasattr(self, 'IterPCA_gene_loadings'):
-            #if only conditional and iterative exist
+        elif hasattr(self, 'residPCA_gene_loadings') and hasattr(self, 'IterPCA_gene_loadings'):
+            #if only residPCA and iterative exist
             
             # compute the squared correlation between the gene loadings for standard PCA and the gene loadings for each cell type
-            CondPCA_correlations = self._compute_squared_correlation_w_iterative(cond_gene_loadings_sub_BIC, iter_gene_loadings_sub_BIC).apply(pd.to_numeric, errors='coerce')
+            residPCA_correlations = self._compute_squared_correlation_w_iterative(resid_gene_loadings_sub_BIC, iter_gene_loadings_sub_BIC).apply(pd.to_numeric, errors='coerce')
 
             # label states with their corresponding cell type
-            self.CondPCA_correlations = pd.merge(CondPCA_correlations, self._label_Global_CellType_States(CondPCA_correlations, "Conditional"), left_index=True, right_index=True) # CHANGE FUNCTION
+            self.residPCA_correlations = pd.merge(residPCA_correlations, self._label_Global_CellType_States(residPCA_correlations, "residPCA"), left_index=True, right_index=True) # CHANGE FUNCTION
 
             # COMPUTE IMAGE OUTPUTS
             if self.save_image_outputs:
                 # plot heatmaps
-                self._plot_heatmap_global_ct_specific(CondPCA_correlations, "CondPCA")
+                self._plot_heatmap_global_ct_specific(residPCA_correlations, "residPCA")
                 # Calculate proportions global vs ct specific states
-                conditional_prop = self._calc_prop(self.CondPCA_correlations, "Conditional")
-                self._prop_plot(conditional_prop)
+                resid_prop = self._calc_prop(self.residPCA_correlations, "residPCA")
+                self._prop_plot(resid_prop)
                 # also make Upset plots
-                self._Upset(self.CondPCA_correlations, "Conditional")
-                self._plot_KDE(CondPCA_IterPCA_squared_correlations, PCA_type="Conditional PCA")  
+                self._Upset(self.residPCA_correlations, "residPCA")
+                self._plot_KDE(residPCA_IterPCA_squared_correlations, PCA_type="residPCA")  
 
         elif hasattr(self, 'StandardPCA_gene_loadings'):
-            raise ValueError("Only Standard PCA has been performed, must perform both/either Conditional or Iterative PCA as well.")
-        elif hasattr(self, 'CondPCA_gene_loadings'):
-            raise ValueError("Only Conditional PCA has been performed, must perform both/either Standard or Iterative PCA as well.")
+            raise ValueError("Only Standard PCA has been performed, must perform both/either residPCA or Iterative PCA as well.")
+        elif hasattr(self, 'residPCA_gene_loadings'):
+            raise ValueError("Only residPCA has been performed, must perform both/either Standard or Iterative PCA as well.")
         elif hasattr(self, 'IterPCA_gene_loadings'):
-            raise ValueError("Only Iterative PCA has been performed, must perform both/either Standard or Conditional PCA as well.")
+            raise ValueError("Only Iterative PCA has been performed, must perform both/either Standard or residPCA as well.")
         else:
             raise ValueError("No processed datasets to compare.")
 
