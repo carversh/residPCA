@@ -2,7 +2,7 @@
 
 condPCA is an analysis pipeline for inferring cell states within and across cell types by leveraging cell type labels. 
 
-It takes a count matrix (N cells$\times$G genes) as input and produces ...
+It takes a count matrix (N cells x G genes) as input and produces ...
 
 ![Inline Image](https://github.com/carversh/residPCA/blob/main/pipeline_visual.png)
 
