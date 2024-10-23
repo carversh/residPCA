@@ -1,6 +1,6 @@
 # residPCA Package v1.0.0
 
-condPCA is an analysis pipeline for inferring cell states within and across cell types by leveraging cell type labels. 
+residPCA is an analysis pipeline for inferring cell states within and across cell types by leveraging cell type labels. 
 
 It takes a count matrix (N cells x G genes) as input and produces ...
 
