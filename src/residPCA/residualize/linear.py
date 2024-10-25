@@ -4,6 +4,7 @@ import numpy as np
 import scipy.linalg
 from numpy import ndarray
 
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline
@@ -79,33 +80,47 @@ class _LinearRegressionResiduals(TransformerMixin):
     def __init__(
             self,
             include_intercept: bool = True,
-            method: Literal['onehot', 'lstsq', 'pinv'] = 'lstsq'
+            method: Literal['onehot', 'lstsq', 'pinv', 'sklearn'] = 'lstsq'
     ) -> None:
         self.include_intercept = include_intercept
         self.method = method
 
     def fit(self, X: ndarray, y: ndarray) -> '_LinearRegressionResiduals':
-        if self.include_intercept:
-            if self.method == 'onehot':
-                raise ValueError(
-                    'One-hot encoding is not supported with an intercept. '
-                    'Set intercept to False and standard scale outcome before.'
-                )
-            ones_column = np.ones((X.shape[0], 1))
-            X = np.hstack((ones_column, X))
-        self.beta = _linear_regression_effectsizes(X, y, self.method)
+        if self.method == 'sklearn':
+            self.model = LinearRegression(fit_intercept=self.include_intercept)
+            self.model.fit(X, y)
+            self.beta = np.hstack(
+                [
+                    self.model.intercept_[:, None],
+                    self.model.coef_
+                ]
+            )
+        else:
+            if self.include_intercept:
+                if self.method == 'onehot':
+                    raise ValueError(
+                        'One-hot encoding is not supported with an intercept. '
+                        'Set intercept to False and standard scale outcome '
+                        'before.'
+                    )
+                ones_column = np.ones((X.shape[0], 1))
+                X = np.hstack((ones_column, X))
+            self.beta = _linear_regression_effectsizes(X, y, self.method)
         return self
 
     def transform(self, X: ndarray, y: ndarray) -> ndarray:
-        if self.include_intercept:
-            if self.method == 'onehot':
-                raise ValueError(
-                    'One-hot encoding is not supported with an intercept.'
-                    'Set intercept to False and standard_scale to True.'
-                )
-            ones_column = np.ones((X.shape[0], 1))
-            X = np.hstack((ones_column, X))
-        residual = y - X @ self.beta
+        if self.method == 'sklearn':
+            residual = y - self.model.predict(X)
+        else:
+            if self.include_intercept:
+                if self.method == 'onehot':
+                    raise ValueError(
+                        'One-hot encoding is not supported with an intercept.'
+                        'Set intercept to False and standard_scale to True.'
+                    )
+                ones_column = np.ones((X.shape[0], 1))
+                X = np.hstack((ones_column, X))
+            residual = y - X @ self.beta
         return residual
 
     def fit_transform(self, X: ndarray, y: ndarray) -> ndarray:
@@ -127,7 +142,7 @@ class LinearRegressionResiduals(Pipeline):
         Whether to include an intercept in the regression. Not needed if
         the data matrix is already centered and standard_scale_covars is
         False.
-    method : {'onehot', 'lstsq', 'pinv'}
+    method : {'onehot', 'lstsq', 'pinv', 'sklearn'}
         Method to use for the regression.
             - 'lstsq' is used for the least squares solution. This method is
                 stable with respect to ill-conditioned covariate matrices, but
@@ -136,17 +151,20 @@ class LinearRegressionResiduals(Pipeline):
                 and is more efficient for large number of cells. The data
                 matrix should be standardized before using this method, the
                 options standard_scale_covars and include_intercept should be
-                set to False.
+                set to False. For this method, the covar matrix should include
+                all possible factors.
             - 'pinv' is used for the pseudo-inverse solution. This method is
                 faster than 'lstsq' for large number of cells, but can be
                 unstable for ill-conditioned matrices.
+            - 'sklearn' is used for the sklearn implementation of linear
+                regression.
     """
 
     def __init__(
             self,
             standard_scale_covars: bool = True,
             include_intercept: bool = True,
-            method: Literal['onehot', 'lstsq', 'pinv'] = 'lstsq'
+            method: Literal['onehot', 'lstsq', 'pinv', 'sklearn'] = 'lstsq'
     ) -> None:
         """
         Initialize the transformer.
@@ -159,19 +177,22 @@ class LinearRegressionResiduals(Pipeline):
             Whether to include an intercept in the regression. Not needed if
             the data matrix is already centered and standard_scale_covars is
             False.
-        method : {'onehot', 'lstsq', 'pinv'}
+        method : {'onehot', 'lstsq', 'pinv', 'sklearn'}
             Method to use for the regression.
-             - 'lstsq' is used for the least squares solution. This method is
+            - 'lstsq' is used for the least squares solution. This method is
                 stable with respect to ill-conditioned covariate matrices, but
                 can be slow for large number of cells.
-             - 'onehot' can be used when the covariates are one-hot encoded
+            - 'onehot' can be used when the covariates are one-hot encoded
                 and is more efficient for large number of cells. The data
                 matrix should be standardized before using this method, the
                 options standard_scale_covars and include_intercept should be
-                set to False.
-              - 'pinv' is used for the pseudo-inverse solution. This method is
+                set to False. For this method, the covar matrix should include
+                all possible factors.
+            - 'pinv' is used for the pseudo-inverse solution. This method is
                 faster than 'lstsq' for large number of cells, but can be
                 unstable for ill-conditioned matrices.
+            - 'sklearn' is used for the sklearn implementation of linear
+                regression.
         """
         steps = [
             ("linreg", _LinearRegressionResiduals(
