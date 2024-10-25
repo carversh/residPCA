@@ -83,8 +83,11 @@ class _LinearRegressionResiduals(BaseEstimator, TransformerMixin):
     ) -> None:
         self.include_intercept = include_intercept
         self.method = method
+        self.c_scaler = StandardScaler()
 
     def fit(self, X: ndarray, C: ndarray) -> '_LinearRegressionResiduals':
+        if self.method != 'onehot':
+            C = self.c_scaler.fit_transform(C)
         if self.include_intercept:
             ones_column = np.ones((C.shape[0], 1))
             C = np.hstack((ones_column, C))
@@ -92,6 +95,8 @@ class _LinearRegressionResiduals(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: ndarray, C: ndarray) -> ndarray:
+        if self.method != 'onehot':
+            C = self.c_scaler.transform(C)
         if self.include_intercept:
             ones_column = np.ones((X.shape[0], 1))
             C = np.hstack((ones_column, C))
