@@ -89,12 +89,6 @@ class _LinearRegressionResiduals(TransformerMixin):
         if self.method == 'sklearn':
             self.model = LinearRegression(fit_intercept=self.include_intercept)
             self.model.fit(X, y)
-            self.beta = np.hstack(
-                [
-                    self.model.intercept_[:, None],
-                    self.model.coef_
-                ]
-            )
         else:
             if self.include_intercept:
                 if self.method == 'onehot':
@@ -127,7 +121,15 @@ class _LinearRegressionResiduals(TransformerMixin):
         return self.fit(X, y).transform(X, y)
 
     def get_effectsizes(self) -> ndarray:
-        return self.beta
+        if self.method == 'sklearn':
+            return np.hstack(
+                [
+                    self.model.intercept_[:, None],
+                    self.model.coef_
+                ]
+            )
+        else:
+            return self.beta
 
 
 class LinearRegressionResiduals(Pipeline):
