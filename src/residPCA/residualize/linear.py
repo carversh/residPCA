@@ -88,8 +88,8 @@ class _LinearRegressionResiduals(TransformerMixin):
         if self.include_intercept:
             if self.method == 'onehot':
                 raise ValueError(
-                    'One-hot encoding is not supported with an intercept.'
-                    'Set intercept to False and standard_scale to True.'
+                    'One-hot encoding is not supported with an intercept. '
+                    'Set intercept to False and standard scale outcome before.'
                 )
             ones_column = np.ones((X.shape[0], 1))
             X = np.hstack((ones_column, X))
@@ -130,16 +130,16 @@ class LinearRegressionResiduals(Pipeline):
     method : {'onehot', 'lstsq', 'pinv'}
         Method to use for the regression.
             - 'lstsq' is used for the least squares solution. This method is
-            stable with respect to ill-conditioned covariate matrices, but
-            can be slow for large number of cells.
+                stable with respect to ill-conditioned covariate matrices, but
+                can be slow for large number of cells.
             - 'onehot' can be used when the covariates are one-hot encoded
-            and is more efficient for large number of cells. The data
-            matrix should be standardized before using this method, the
-            options standard_scale_covars and include_intercept should be
-            set to False.
+                and is more efficient for large number of cells. The data
+                matrix should be standardized before using this method, the
+                options standard_scale_covars and include_intercept should be
+                set to False.
             - 'pinv' is used for the pseudo-inverse solution. This method is
-            faster than 'lstsq' for large number of cells, but can be
-            unstable for ill-conditioned matrices.
+                faster than 'lstsq' for large number of cells, but can be
+                unstable for ill-conditioned matrices.
     """
 
     def __init__(
