@@ -36,7 +36,7 @@ def _linear_regression_effectsizes(
             method: Literal['onehot', 'lstsq', 'pinv'] = 'lstsq'
         ) -> Union[ndarray, ndarray]:
     """
-    Regress out covariates C from the data matrix X.
+    Perform linear regression and return the effect sizes.
 
     Parameters
     ----------
@@ -54,8 +54,8 @@ def _linear_regression_effectsizes(
 
     Returns
     -------
-    np.ndarray, np.ndarray
-        Residualized data matrix and effect size matrix.
+    np.ndarray
+        Effect sizes from the regression.
     """
     if method == 'onehot':
         if _test_onehot(C):
