@@ -61,7 +61,8 @@ def _linear_regression_effectsizes(
         if _test_onehot(C):
             beta = (C.T @ X) / np.sum(C, axis=0)[:, None]
         else:
-            raise ValueError('Data has to be one-hot encoded.')
+            raise ValueError(
+                'Data has to be one-hot encoded to use the onehot method.')
     elif method == 'lstsq':
         beta = scipy.linalg.lstsq(C, X)[0]
     elif method == 'pinv':
