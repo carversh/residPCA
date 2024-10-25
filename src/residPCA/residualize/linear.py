@@ -123,13 +123,6 @@ class LinearRegressionResiduals(Pipeline):
         'pinv' is used for the pseudo-inverse solution (faster than 'lstsq' for
         large number of cells, but can be unstable for ill-conditioned
         matrices).
-
-    Attributes
-    ----------
-    beta : np.ndarray
-        Effect sizes from the regression.
-    scaler : sklearn.preprocessing.StandardScaler
-        Scaler used to standardize the data.
     """
 
     def __init__(
