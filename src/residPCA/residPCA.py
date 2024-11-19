@@ -751,7 +751,220 @@ class residPCA(object):
             raise ValueError("No processed datasets to compare.")
 
 def main():
-    pass   
+
+    import sys, argparse
+
+    parser = argparse.ArgumentParser(description="Arguments for the residPCA class from command line.")
+
+    parser.add_argument('command', type=str, choices=['Initialize','Normalize', 'Standardize', 'StandardPCA_fit', 'residPCA_fit', 'Iter_PCA_fit', 'ID_Global_CellType_States'])
+
+    parser.add_argument('--count_matrix_path', type=str, required=True, 
+                        help="Path to the count matrix file.")
+    
+    parser.add_argument('--object_columns', type=lambda s: s.split(','), required=True, 
+                        help="List of object columns.")
+    
+    parser.add_argument('--variable_genes_flavor', type=str, choices=['seurat', 'cell_ranger', 'seurat_v3', 'seurat_v3_paper'], 
+                    default="seurat_v3", 
+                    help="Flavor of variable genes. Must be one of 'seurat', 'cell_ranger', 'seurat_v3', 'seurat_v3_paper'. Default is 'seurat_v3'.")
+    
+    parser.add_argument('--metadata_path', type=str, default=None, 
+                        help="Path to the metadata file. Default is None.")
+    
+    parser.add_argument('--vars_to_regress', type=lambda s: s.split(','), default=True, 
+                        help="Variables to regress (comma-separated). Default is True.")
+    
+    parser.add_argument('--n_PCs', type=int, default=200, 
+                        help="Number of principal components to compute. Default is 200.")
+    
+    parser.add_argument('--random_seed', type=int, default=9989999, 
+                        help="Random seed for reproducibility. Default is 9989999.")
+    
+    def parse_vargenes(value):
+        try:
+            # Try to convert to integer
+            return int(value)
+        except ValueError:
+            # If it fails, return the value as a string
+            if isinstance(value, str):
+                return value
+            raise argparse.ArgumentTypeError(f"Invalid value: {value}. Must be an integer or the string 'all'.")
+    
+    parser.add_argument('--vargenes_IterPCA', type=parse_vargenes, default="all", 
+                    help="Variable genes for iterative PCA. Can be 'all' or an integer. Default is 'all'.")
+    
+    parser.add_argument('--vargenes_Stand_resid', type=parse_vargenes, default="all", 
+                    help="Variable genes for standard residual PCA. Can be 'all' or an integer. Default is 'all'.")
+    
+    parser.add_argument('--BIC', action='store_true', default=True, 
+                    help="Use BIC for model selection. Default is True.")
+    parser.add_argument('--no_BIC', action='store_false', dest='BIC', 
+                    help="Do not use BIC for model selection.") # If --BIC is provided, args.BIC will be set to True. If --no_BIC is provided, args.BIC will be set to False.
+    
+    parser.add_argument('--save_image_outputs', action='store_true', 
+                    help="Save image outputs. Default is False.")
+    
+    parser.add_argument('--path_to_directory', type=str, default="./", 
+                        help="Path to output directory. Default is './'.")
+    
+    parser.add_argument('--basename', type=str, 
+                        default=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}', 
+                        help="Basename for output files. Default is a timestamped name.")
+    
+    parser.add_argument('--global_ct_cutoff', type=float, default=0.2, 
+                        help="Global cutoff for cell types. Default is 0.2.")
+    
+    parser.add_argument('--logged', action='store_true', 
+                    help="Indicate if data is logged. Default is False.")
+    
+    parser.add_argument('--sparse_PCA', action='store_true', 
+                    help="Use sparse PCA. Default is False.")
+
+    args = parser.parse_args()
+
+    # Path to save the object
+    obj_file = "scExp.pkl"
+
+ 
+    def save_object(obj, path, basename, obj_file):
+        # Directory path
+        directory = os.path.join(path, basename)
+        print(f"Ensuring directory exists: {directory}")
+
+        # Ensure the directory exists
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # Full file path
+        file_path = os.path.join(directory, obj_file)
+        print(f"Saving object to: {file_path}")
+
+        # Save the object
+        with open(file_path, 'wb') as f:
+            pickle.dump(obj, f)
+
+        print(f"Initialized and saved residPCA object to {file_path}.")
+
+    def load_object(path, basename, obj_file): # HAVE NOT TESTED THIS FUNCTION!!!
+        file_path = os.path.join(path, basename, obj_file)
+
+        # Load the object
+        with open(file_path, 'rb') as f:
+            obj = pickle.load(f)
+        print(f"Loaded residPCA object from {file_path}.")
+        return obj
+
+    if args.command == "Initialize":
+
+                # print all args and label them
+        print("Command:", args.command)
+        print("Count Matrix Path:", args.count_matrix_path)
+        print("Object Columns:", args.object_columns)
+        print("Variable Genes Flavor:", args.variable_genes_flavor)
+        print("Metadata Path:", args.metadata_path)
+        print("Variables to Regress:", args.vars_to_regress)
+        print("Number of PCs:", args.n_PCs)
+        print("Random Seed:", args.random_seed)
+        print("Variable Genes for Iterative PCA:", args.vargenes_IterPCA)
+        print("Variable Genes for Standard/Residual PCA:", args.vargenes_Stand_resid)
+        print("Use BIC:", args.BIC)
+        print("Save Image Outputs:", args.save_image_outputs)
+        print("Path to Directory:", args.path_to_directory)
+        print("Basename:", args.basename)
+        print("Global Cell Type Cutoff:", args.global_ct_cutoff)
+        print("Logged:", args.logged)
+        print("Sparse PCA:", args.sparse_PCA)
+
+        # Load the object
+        scExp = residPCA(count_matrix_path = args.count_matrix_path, 
+            object_columns = args.object_columns, 
+            variable_genes_flavor = args.variable_genes_flavor,
+            metadata_path= args.metadata_path, 
+            vars_to_regress= args.vars_to_regress, 
+            n_PCs= args.n_PCs, 
+            random_seed= args.random_seed, 
+            vargenes_IterPCA= args.vargenes_IterPCA, 
+            vargenes_Stand_resid= args.vargenes_Stand_resid, 
+            BIC=args.BIC, 
+            save_image_outputs = args.save_image_outputs, 
+            path_to_directory = args.path_to_directory, 
+            basename= args.basename,  
+            global_ct_cutoff= args.global_ct_cutoff,
+            logged= args.logged,
+            sparse_PCA= args.sparse_PCA)
+        
+        # Save the object
+        save_object(scExp, args.path_to_directory, args.basename, obj_file)
+
+    # HAVE ONLY CHECKED INITIALISE HAVEN"T CHECKED AFTER THIS AND HOW LOADING THE PKL OBJECT IS!!!
+    if args.command == 'Normalize':
+        load_object(args.path_to_directory, args.basename, obj_file)
+        
+        scExp.Normalize()
+        
+        save_object(scExp, args.path_to_directory, args.basename, obj_file)
+
+    elif args.command == 'Standardize':
+        load_object(args.path_to_directory, args.basename, obj_file)
+
+        scExp.Standardize()
+
+        save_object(scExp, args.path_to_directory, args.basename, obj_file)
+
+    elif args.command == 'StandardPCA_fit':
+        load_object(args.path_to_directory, args.basename, obj_file)
+        
+        scExp.StandardPCA_fit()
+
+        save_object(scExp, args.path_to_directory, args.basename, obj_file)
+
+    elif args.command == 'residPCA_fit':
+        load_object(args.path_to_directory, args.basename, obj_file)
+
+        scExp.residPCA_fit()
+
+        save_object(scExp, args.path_to_directory, args.basename, obj_file)
+
+    elif args.command == 'Iter_PCA_fit':
+        load_object(args.path_to_directory, args.basename, obj_file)
+
+        scExp.Iter_PCA_fit()
+
+        save_object(scExp, args.path_to_directory, args.basename, obj_file)
+    
+    elif args.command == 'ID_Global_CellType_States':
+        load_object(args.path_to_directory, args.basename, obj_file)
+
+        scExp.ID_Global_CellType_States()
+
+        save_object(scExp, args.path_to_directory, args.basename, obj_file)
 
 if __name__=="__main__":
     main()
+
+
+# python residPCA.py Initialize \
+#     --count_matrix_path /Users/shayecarver/residPCA/examples/example_data.h5ad \
+#     --object_columns Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
+#     --variable_genes_flavor seurat_v3 \
+#     --vars_to_regress Batch,celltype,total_counts \
+#     --n_PCs 150 \
+#     --random_seed 42 \
+#     --vargenes_IterPCA 3000 \
+#     --vargenes_Stand_resid 3000 \
+#     --BIC \
+#     --save_image_outputs \
+#     --basename test_run \
+#     --global_ct_cutoff 0.2
+
+# python residPCA.py Normalize
+
+# python residPCA.py Standardize
+
+# python residPCA.py StandardPCA_fit
+
+# python residPCA.py residPCA_fit
+
+# python residPCA.py Iter_PCA_fit
+
+# python residPCA.py ID_Global_CellType_States
