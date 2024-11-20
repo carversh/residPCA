@@ -830,7 +830,7 @@ def main():
         save_object(scExp, init_args.path_to_directory, init_args.basename, obj_file)
 
     # check if args.command is not "initialize"
-    elif args.command in ["Normalize", "Standardize", "StandardPCA_fit", "residPCA_fit", "Iter_PCA_fit", "ID_Global_CellType_States"]:
+    elif args.command in ["Normalize", "Standardize", "StandardPCA_fit", "residPCA_fit", "Iter_PCA_fit"]:
         parser = argparse.ArgumentParser(description="Normalize residPCA data.")
         parser.add_argument('--path_to_directory', type=str, default="./", help="Path to output directory.")
         parser.add_argument('--basename', type=str, default=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}', help="Basename for output files.")
@@ -840,34 +840,52 @@ def main():
 
         if args.command == "Normalize":
             print("Normalizing data.")
-            scExp.Normalize()  
+            scExp.Normalize()
+            save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)  
         
         elif args.command == "Standardize":
             print("Standardizing data.")
             scExp.Standardize()
+            save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)
 
         elif args.command == "StandardPCA_fit":
             print("Fitting Standard PCA.")
             scExp.StandardPCA_fit()
+            standard_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_gene_loadings, scExp.StandardPCA_BIC_cutoff)
+            standard_cell_embeddings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_cell_embeddings, scExp.StandardPCA_BIC_cutoff)
+            # save loadings and embeddings as dataframe
+            standard_gene_loadings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/StandardPCA_gene_loadings.csv')
+            standard_cell_embeddings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/StandardPCA_cell_embeddings.csv')
 
         elif args.command == "residPCA_fit":
             print("Fitting residPCA.")
             scExp.residPCA_fit()
+            resid_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.ResidPCA_gene_loadings, scExp.ResidPCA_BIC_cutoff)
+            resid_cell_embeddings_sub_BIC = scExp._sub_dataframe_BIC(scExp.ResidPCA_cell_embeddings, scExp.ResidPCA_BIC_cutoff)
+            # save loadings and embeddings as dataframe
+            resid_gene_loadings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/ResiddPCA_gene_loadings.csv')
+            resid_cell_embeddings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/ResidPCA_cell_embeddings.csv')
 
         elif args.command == "Iter_PCA_fit":
             print("Fitting Iterative PCA.")
             scExp.Iter_PCA_fit()
+            for celltype in scExp.IterPCA_gene_loadings.keys():
+                scExp._sub_dataframe_BIC(scExp.IterPCA_gene_loadings[celltype], scExp.IterPCA_BIC_cutoff[celltype]) .to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_gene_loadings_{celltype}.csv')
+                scExp._sub_dataframe_BIC(scExp.IterPCA_cell_embeddings[celltype], scExp.IterPCA_BIC_cutoff[celltype]) .to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_cell_embeddings_{celltype}.csv')
 
-        elif args.command == "ID_Global_CellType_States":
-            print("Identifying Global and Cell Type Specific States.")            
-            scExp.ID_Global_CellType_States()
+    elif args.command == "ID_Global_CellType_States":
+        print("Identifying Global and Cell Type Specific States.")            
+        scExp.ID_Global_CellType_States()
 
-        save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)
+        # NEED TO EDIT THIS SO IT INCORPORATES THE OUTPUTS RATHER THAN LOADINGS THE OBJECT
+
+        
 
     else:
         raise ValueError(f"Invalid command: {args.command}")
     
-    ## OUTPUT EMBEDDINGS/LOADINGS IF RUNNING FROM COMMAND LINE!
+    ## subset to better test subset (include all certain cell types)
+    ## OUTPUT EMBEDDINGS/LOADINGS IF RUNNING FROM COMMAND LINE!, might want to not save object because takes up too much memory
 
 if __name__=="__main__":
     main()
@@ -889,7 +907,7 @@ if __name__=="__main__":
 
 # python residPCA.py Normalize --basename test_run
 
-# python residPCA.py Standardize
+# python residPCA.py Standardize --basename test_run
 
 # python residPCA.py StandardPCA_fit
 
