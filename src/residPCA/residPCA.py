@@ -423,7 +423,7 @@ class residPCA(object):
         plt.ylabel("Variance")
         plt.title(f'Mean-Variance Relationship ({label}, {log_normed_data.shape[0]} Cells)')
         # save plot to current directory
-        plt.savefig(f'{self.directory_path}/Mean_Variance_Relationship_{label}.png')
+        plt.savefig(f'{self.directory_path}/Mean_Variance_Relationship_{label.replace(" ", "_")}.png')
         # close plot
         plt.close()
     
@@ -851,11 +851,15 @@ def main():
         elif args.command == "StandardPCA_fit":
             print("Fitting Standard PCA.")
             scExp.StandardPCA_fit()
-            standard_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_gene_loadings, scExp.StandardPCA_BIC_cutoff)
+            standard_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_gene_loadings, scExp.StandardPCA_BIC_cutoff) # WHY NOT GETTING SUBSET TO BIC
             standard_cell_embeddings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_cell_embeddings, scExp.StandardPCA_BIC_cutoff)
+            print(scExp.StandardPCA_BIC_cutoff)
             # save loadings and embeddings as dataframe
-            standard_gene_loadings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/StandardPCA_gene_loadings.csv')
-            standard_cell_embeddings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/StandardPCA_cell_embeddings.csv')
+            standard_gene_loadings_sub_BIC.to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/StandardPCA_gene_loadings.csv')
+            standard_cell_embeddings_sub_BIC.to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/StandardPCA_cell_embeddings.csv')
+            save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)
+
+
 
         elif args.command == "residPCA_fit":
             print("Fitting residPCA.")
@@ -870,8 +874,8 @@ def main():
             print("Fitting Iterative PCA.")
             scExp.Iter_PCA_fit()
             for celltype in scExp.IterPCA_gene_loadings.keys():
-                scExp._sub_dataframe_BIC(scExp.IterPCA_gene_loadings[celltype], scExp.IterPCA_BIC_cutoff[celltype]) .to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_gene_loadings_{celltype}.csv')
-                scExp._sub_dataframe_BIC(scExp.IterPCA_cell_embeddings[celltype], scExp.IterPCA_BIC_cutoff[celltype]) .to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_cell_embeddings_{celltype}.csv')
+                scExp._sub_dataframe_BIC(scExp.IterPCA_gene_loadings[celltype], scExp.IterPCA_BIC_cutoff[celltype]).to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_gene_loadings_{celltype}.csv')
+                scExp._sub_dataframe_BIC(scExp.IterPCA_cell_embeddings[celltype], scExp.IterPCA_BIC_cutoff[celltype]).to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_cell_embeddings_{celltype}.csv')
 
     elif args.command == "ID_Global_CellType_States":
         print("Identifying Global and Cell Type Specific States.")            
@@ -884,8 +888,9 @@ def main():
     else:
         raise ValueError(f"Invalid command: {args.command}")
     
-    ## subset to better test subset (include all certain cell types)
-    ## OUTPUT EMBEDDINGS/LOADINGS IF RUNNING FROM COMMAND LINE!, might want to not save object because takes up too much memory
+    # START: metadata IS NOT BEING SUBSET CORRECTLY START HERE Nov 22nd!
+    ## subset to better test subset (include all certain cell types) [1]
+    ## OUTPUT EMBEDDINGS/LOADINGS IF RUNNING FROM COMMAND LINE!, might want to not save object because takes up too much memory [2]
 
 if __name__=="__main__":
     main()
@@ -909,7 +914,7 @@ if __name__=="__main__":
 
 # python residPCA.py Standardize --basename test_run
 
-# python residPCA.py StandardPCA_fit
+# python residPCA.py StandardPCA_fit --basename test_run
 
 # python residPCA.py residPCA_fit
 
