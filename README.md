@@ -46,27 +46,76 @@ The ResidPCA Toolkit can be run from the command line or the same steps can be r
 
 ### Step 1 - instantiate a class with your input data
 
+Command line command:
+```
+python residPCA.py Initialize \
+    --count_matrix_path ./examples/example_data.h5ad \
+    --object_columns Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
+    --variable_genes_flavor seurat \
+    --vars_to_regress Batch,celltype,total_counts \
+    --n_PCs 150 \
+    --random_seed 42 \
+    --vargenes_IterPCA 3000 \
+    --vargenes_Stand_resid 3000 \
+    --BIC \
+    --save_image_outputs \
+    --basename test_run \
+    --global_ct_cutoff 0.2
+
+```
+
+Python environment command:
+
 ```
 scExp = condPCA(count_matrix_path="matrix.txt", metadata_path="metadata.txt", object_columns=['Batch', 'Sex','celltype'], save_image_outputs=False, BIC=True)
 
 ```
 
 Input Data
-  - ```count_matrix_path``` - points to the tab delimited file that is cells by genes dimensional, where rownames correspond to the barcoded cells and columnnames correspond to the genes, or a Scanpy object.
-  - ```metadata_path``` - points to the tab delimited file that is cells by covariates/features dimensional.There must be a single column with a column name "celltype" that contains the cell type labels corresponding to each barcoded cell in the count matrix.
+  - ```count_matrix_path``` - points to the .h5ad object or tab delimited file that is cells by genes dimensional, where rownames correspond to the barcoded cells and columnnames correspond to the genes.
+  - ```metadata_path``` - IF metadata is not included in the .h5ad object, this parameter points to the tab delimited file that is cells by covariates/features dimensional.There must be a single column with a column name "celltype" that contains the cell type labels corresponding to each barcoded cell in the count matrix.
 
 Parameters
-  - ```object_columns = []``` - A list that specifies column names whose column should be treated as a factor or object and not a numeric column. The method will one hot encode these columns. Celltype must be in this list. Commonly, batch is another covariate that is included in this list.
-  - ```n_PCs``` - number of PCs to output per method. Default is 200.
-  - ```random_seed``` - Default is 998999.
-  - ```vargenes_Stand_Cond``` - The number of variable genes to analyze during Standard and Conditional PCA. This can be set to an integer or "all" if all genes should be considered for analyses.
-  - ```vargenes_IterPCA``` - The number of variable genes to analyze during Iterative PCA. This can be set to an integer or "all" if all genes should be considered for analyses.
-  - ```BIC``` - True/False. Specified whether to compute the Bayesian Information Criterion after each method so that the set of states has a statistical cutoff. 
-  - ```save_image_outputs``` - True/False. Specifies whether to save the graphical outputs during the pipeline processing (i.e. Mean-Variance Log-Normalization Graphs, BIC Cutoff Graphs,...).
+- `--count_matrix_path` (str, required):
+Path to the count matrix file.
+- `--object_columns` (str, required):
+Comma-separated list of object columns.
+- `--variable_genes_flavor` (str, optional):
+Specifies the flavor of variable genes to use. Options include:
+    -`seurat`
+    -`cell_ranger`
+    -`seurat_v3`
+    -`seurat_v3_paper`
+Default is seurat_v3.
+`--metadata_path` (str, optional):
+Path to the metadata file. Default is None.
+- `--vars_to_regress` (str, optional):
+Comma-separated list of variables to regress. Default is True.
+- `--n_PCs` (int, optional):
+Number of principal components to compute. Default is 200.
+- `--random_seed` (int, optional):
+Random seed for reproducibility. Default is 9989999.
+- `--vargenes_IterPCA` (int or str, optional):
+Variable genes for iterative PCA. Accepts an integer or all. Default is all.
+- `--vargenes_Stand_resid` (int or str, optional):
+Variable genes for standard residual PCA. Accepts an integer or all. Default is all.
+- `--BIC` (bool, optional):
+Use BIC for model selection. Enabled by default.
+- `--no_BIC` (bool, optional):
+Do not use BIC for model selection. Overrides --BIC.
+- `--save_image_outputs` (bool, optional):
+Save image outputs. Disabled by default.
+- `--path_to_directory` (str, optional):
+Path to the output directory. Default is "./".
+- `--basename` (str, optional):
+Basename for output files. Default is residPCA_run_<current_datetime>.
+- `--global_ct_cutoff` (float, optional):
+Global cutoff for cell types. Default is 0.2.
+`--logged` (bool, optional):
+Indicate if data is logged. Disabled by default.
+- `--sparse_PCA` (bool, optional):
+Use sparse PCA. Disabled by default.
 
-  - ```path_to_directory``` - path where the basename directory will be created that will contain all images and data created.
-  - ```basename``` - basename of the directory created that will contain all images and data created from each command. Default is ```CondPCA_run_{date}```, i.e. ```CondPCA_run_2024-01-05_13_35_14```.
-  - ```global_ct_cutoff``` - squared correlation at which to above this cutoff, a cell type is involved in this given state and below this curoff, a cell type is not involved in this given state. Default is 0.2. (used in ```.ID_Global_CellType_States()``` function)
 ### Step 2 - log-normalize the count data
 
 Example command:
