@@ -1,4 +1,4 @@
-name: residPCA
+name: ResidPCA_Toolkit
 channels:
   - conda-forge
   - defaults
