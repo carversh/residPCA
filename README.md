@@ -240,10 +240,8 @@ Returns the IterPCA output in the form of dictionaries, where each dictionary is
 
 Outputs in command line (the following files will be generated as outputs):
 #embeddings/loadings output at BIC cuttoff or n_PCs specified
-- Iter_PCA_gene_loadings_*.csv
-  - Contains gene loadings data for each iteration.
-- Iter_PCA_cell_embeddings_*.csv
-  - Contains cell embeddings data for each iteration.
+- `Iter_PCA_gene_loadings_*.csv`: contains gene loadings data for each iteration.
+- `Iter_PCA_cell_embeddings_*.csv`: contains cell embeddings data for each iteration.
 The * in the filenames represents the name of the cell type as specified in the metadata. For each cell type, a pair of files (gene loadings and cell embeddings) will be outputted.
 
 Outputs in Python object:
