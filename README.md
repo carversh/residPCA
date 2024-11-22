@@ -12,7 +12,7 @@ The pre-print is available [here]().
 
 # Installation
 
-First, install the neccessary conda environment in which to run the ResidPCA Toolkit (the environment configuration file can be found [here](https://github.com/carversh/residPCA/blob/main/environment.yml):
+First, install the neccessary conda environment in which to run the ResidPCA Toolkit (the environment configuration file can be found [here](https://github.com/carversh/residPCA/blob/main/environment.yml) ):
 ```
 conda env create -f environment.yml
 ```
@@ -184,7 +184,10 @@ Path to the output directory. Default is "./".
 - `--basename` (str, optional):
 Basename for output files. Default is residPCA_run_<current_datetime>.
 
-Outputs
+Outputs in command line:
+#embeddings/loadings output at BIC cuttoff or n_PCs specified
+
+Outputs in Python object:
   - ```scExp.StandardPCA_cell_embeddings``` - cell embeddings outputted by Standard PCA
   - ```scExp.StandardPCA_gene_loadings``` - gene loadings or eigenvectors outputted by Standard PCA
   - ```scExp.StandardPCA_eigenvalues``` - eigenvalues outputted by Standard PCA
@@ -209,7 +212,10 @@ Path to the output directory. Default is "./".
 - `--basename` (str, optional):
 Basename for output files. Default is residPCA_run_<current_datetime>.
 
-Outputs
+Outputs in command line:
+#embeddings/loadings output at BIC cuttoff or n_PCs specified
+
+Outputs in Python object:
   - ```scExp.CondPCA_cell_embeddings``` - cell embeddings outputted by Conditional PCA
   - ```scExp.CondPCA_gene_loadings``` - gene loadings or eigenvectors outputted by Conditional PCA
   - ```scExp.CondPCA_eigenvalues``` - eigenvalues outputted by Conditional PCA
@@ -229,13 +235,16 @@ scExp.Iter_PCA_fit()
 ```
 Returns the IterPCA output in the form of dictionaries, where each dictionary is equal to the length of the number of cell types. The keys of the dictionary correspond to the cell type in the "celltype" column of the metadata while the values of the dictionary represent the respective dataframe that corresponds to that cell type. 
 
-Outputs
+Outputs in command line:
+#embeddings/loadings output at BIC cuttoff or n_PCs specified
+
+Outputs in Python object:
   - ```scExp.IterPCA_cell_embeddings``` - dictionary containing the cell embeddings outputted by Iterative PCA per cell type
   - ```scExp.IterPCA_gene_loadings``` - dictionary containing the gene loadings outputted by Iterative PCA per cell type
   - ```scExp.IterPCA_eigenvalues``` - dictionary containing the gene eigenvalues outputted by Iterative PCA per cell type
   - ```scExp.IterPCA_BIC_cutoff``` - dictionary of PC cutoffs that specifies the maximum state that is significant per cell type. For significant states, subset the cell embeddings and gene loadings from PC1 to the PC specified in this variable
 
-Warning
+Warning:
   - If there are fewer than 200 cells in a cell type, the method will return an empty dataset for that given cell type.
 
 ### Step 7 - identify states that are cell type specific and states that span all cell types
