@@ -12,6 +12,7 @@ from datetime import datetime
 from upsetplot import UpSet, plot, from_memberships
 import pickle
 from sklearn.decomposition import SparsePCA
+import glob
 
 class residPCA(object):
     def __init__(self, 
@@ -760,7 +761,7 @@ def main():
         file_path = os.path.join(directory, obj_file)
         with open(file_path, 'wb') as f:
             pickle.dump(obj, f)
-        print(f"Initialized and saved residPCA object to {file_path}.")
+        print(f"Saved residPCA object to {file_path}.")
 
     def load_object(path, basename, obj_file):
         file_path = os.path.join(path, basename, obj_file)
@@ -830,7 +831,7 @@ def main():
         save_object(scExp, init_args.path_to_directory, init_args.basename, obj_file)
 
     # check if args.command is not "initialize"
-    elif args.command in ["Normalize", "Standardize", "StandardPCA_fit", "residPCA_fit", "Iter_PCA_fit"]:
+    elif args.command in ["Normalize", "Standardize", "StandardPCA_fit", "residPCA_fit", "Iter_PCA_fit", "ID_Global_CellType_States"]:
         parser = argparse.ArgumentParser(description="Normalize residPCA data.")
         parser.add_argument('--path_to_directory', type=str, default="./", help="Path to output directory.")
         parser.add_argument('--basename', type=str, default=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}', help="Basename for output files.")
@@ -846,52 +847,42 @@ def main():
         elif args.command == "Standardize":
             print("Standardizing data.")
             scExp.Standardize()
-            save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)
+            
 
         elif args.command == "StandardPCA_fit":
             print("Fitting Standard PCA.")
             scExp.StandardPCA_fit()
-            standard_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_gene_loadings, scExp.StandardPCA_BIC_cutoff) # WHY NOT GETTING SUBSET TO BIC
+            standard_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_gene_loadings, scExp.StandardPCA_BIC_cutoff) 
             standard_cell_embeddings_sub_BIC = scExp._sub_dataframe_BIC(scExp.StandardPCA_cell_embeddings, scExp.StandardPCA_BIC_cutoff)
-            print(scExp.StandardPCA_BIC_cutoff)
             # save loadings and embeddings as dataframe
             standard_gene_loadings_sub_BIC.to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/StandardPCA_gene_loadings.csv')
             standard_cell_embeddings_sub_BIC.to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/StandardPCA_cell_embeddings.csv')
-            save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)
-
-
 
         elif args.command == "residPCA_fit":
             print("Fitting residPCA.")
             scExp.residPCA_fit()
-            resid_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.ResidPCA_gene_loadings, scExp.ResidPCA_BIC_cutoff)
-            resid_cell_embeddings_sub_BIC = scExp._sub_dataframe_BIC(scExp.ResidPCA_cell_embeddings, scExp.ResidPCA_BIC_cutoff)
+            resid_gene_loadings_sub_BIC = scExp._sub_dataframe_BIC(scExp.residPCA_gene_loadings, scExp.residPCA_BIC_cutoff)
+            resid_cell_embeddings_sub_BIC = scExp._sub_dataframe_BIC(scExp.residPCA_cell_embeddings, scExp.residPCA_BIC_cutoff)
             # save loadings and embeddings as dataframe
-            resid_gene_loadings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/ResiddPCA_gene_loadings.csv')
-            resid_cell_embeddings_sub_BIC.to_csv(f'{norm_args.directory_path}/{norm_args.basename}/ResidPCA_cell_embeddings.csv')
+            resid_gene_loadings_sub_BIC.to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/ResidPCA_gene_loadings.csv')
+            resid_cell_embeddings_sub_BIC.to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/ResidPCA_cell_embeddings.csv')
 
         elif args.command == "Iter_PCA_fit":
             print("Fitting Iterative PCA.")
             scExp.Iter_PCA_fit()
             for celltype in scExp.IterPCA_gene_loadings.keys():
-                scExp._sub_dataframe_BIC(scExp.IterPCA_gene_loadings[celltype], scExp.IterPCA_BIC_cutoff[celltype]).to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_gene_loadings_{celltype}.csv')
-                scExp._sub_dataframe_BIC(scExp.IterPCA_cell_embeddings[celltype], scExp.IterPCA_BIC_cutoff[celltype]).to_csv(f'{norm_args.directory_path}/{norm_args.basename}/Iter_PCA_cell_embeddings_{celltype}.csv')
+                scExp._sub_dataframe_BIC(scExp.IterPCA_gene_loadings[celltype], scExp.IterPCA_BIC_cutoff[celltype]).to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/Iter_PCA_gene_loadings_{celltype}.csv')
+                scExp._sub_dataframe_BIC(scExp.IterPCA_cell_embeddings[celltype], scExp.IterPCA_BIC_cutoff[celltype]).to_csv(f'{norm_args.path_to_directory}/{norm_args.basename}/Iter_PCA_cell_embeddings_{celltype}.csv')
 
-    elif args.command == "ID_Global_CellType_States":
-        print("Identifying Global and Cell Type Specific States.")            
-        scExp.ID_Global_CellType_States()
+        elif args.command == "ID_Global_CellType_States":
+            print("Identifying Global and Cell Type Specific States.")           
+            scExp.ID_Global_CellType_States()
 
-        # NEED TO EDIT THIS SO IT INCORPORATES THE OUTPUTS RATHER THAN LOADINGS THE OBJECT
-
-        
+        save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)       
 
     else:
         raise ValueError(f"Invalid command: {args.command}")
     
-    # START: metadata IS NOT BEING SUBSET CORRECTLY START HERE Nov 22nd!
-    ## subset to better test subset (include all certain cell types) [1]
-    ## OUTPUT EMBEDDINGS/LOADINGS IF RUNNING FROM COMMAND LINE!, might want to not save object because takes up too much memory [2]
-
 if __name__=="__main__":
     main()
 
@@ -910,14 +901,14 @@ if __name__=="__main__":
 #     --basename test_run \
 #     --global_ct_cutoff 0.2
 
-# python residPCA.py Normalize --basename test_run
+# python residPCA.py Normalize --basename test_run --path_to_directory ./
 
-# python residPCA.py Standardize --basename test_run
+# python residPCA.py Standardize --basename test_run --path_to_directory ./
 
-# python residPCA.py StandardPCA_fit --basename test_run
+# python residPCA.py StandardPCA_fit --basename test_run --path_to_directory ./
 
-# python residPCA.py residPCA_fit
+# python residPCA.py residPCA_fit --basename test_run --path_to_directory ./
 
-# python residPCA.py Iter_PCA_fit
+# python residPCA.py Iter_PCA_fit --basename test_run --path_to_directory ./
 
-# python residPCA.py ID_Global_CellType_States
+# python residPCA.py ID_Global_CellType_States --basename test_run --path_to_directory ./
