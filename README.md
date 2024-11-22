@@ -1,22 +1,50 @@
 # residPCA Package v1.0.0
 
-residPCA is an analysis pipeline for inferring cell states within and across cell types by leveraging cell type labels. 
+The Residual Principal Component Analysis (ResidPCA) Toolkit is a comprehensive software platform designed to implement a novel method, ResidPCA, and well as Standard PCA and Iterative PCA (PCA applied to each cell type) to identify sets of cellular states within single cell data. ResidPCA leverages log-normalized TP10k data with known cell type labels to estimate a set of cellular states that are independent of cell type. The method first removes cell type-driven noise from the expression matrix and then applies PCA on the residucalized matrix to identify a set of denoised cellular states within and across cell types.
 
-It takes a count matrix (N cells x G genes) as input and produces ...
+As input, the pipline accepts a single-cell cell x genes count matrix (either a single-cell RNA-seq matrix or a single-cell ATAC-seq matrix with peaks mapped to genes) in the form of a [.h5ad](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html) file or a .txt file. The accompanying metadata (including cell type labels) must be included in the .h5ad object or inputted as a separate .txt file. 
+
+Note: standard pre-processing pipelines can map scATAC-seq data to peaks such as Signac package in Seurat.
+
+The pre-print is available [here]().
 
 ![Inline Image](https://github.com/carversh/residPCA/blob/main/residPCA_visual.png)
 
 # Installation
 
+First, install the neccessary conda environment in which to run the ResidPCA Toolkit (the environment configuration file can be found (here)[https://github.com/carversh/residPCA/blob/main/environment.yml]):
 ```
-pip install residPCA
+conda env create -f environment.yml
+```
+Note: ensure that (Miniconda)[https://docs.anaconda.com/miniconda/install/] or (Conda)[https://anaconda.org/anaconda/conda] is installed within your computing system.
+
+Second, activate the Conda environment:
+```
+source activate ResidPCA_Toolkit
+```
+ 
+This conda environment now contains all the necessary packages to run the Toolkit.
+
+Third, install the ResidPCA Toolkit via [pip](https://pypi.org/):
+
+```
+pip install ResidPCA
+```
+
+Note: when running the ResidPCA Toolkit, the respective conda environment must always be activated using the command:
+```
+source activate ResidPCA_Toolkit
+```
+To deactivate this environment run:
+```
+conda deactivate ResidPCA_Toolkit
 ```
 
 # Step by Step Guide 
 
-### Step 1 - instantiate a class with your input data
+The ResidPCA Toolkit can be run from the command line or the same steps can be run from within a Python environment. In this tutorial, we will show you how to run the method using either option.
 
-Example command:
+### Step 1 - instantiate a class with your input data
 
 ```
 scExp = condPCA(count_matrix_path="matrix.txt", metadata_path="metadata.txt", object_columns=['Batch', 'Sex','celltype'], save_image_outputs=False, BIC=True)
