@@ -1,4 +1,4 @@
-# residPCA Package v1.0.0
+# ResidPCA Package v1.0.0
 
 The Residual Principal Component Analysis (ResidPCA) Toolkit is a comprehensive software platform designed to implement a novel method, ResidPCA, and well as Standard PCA and Iterative PCA (PCA applied to each cell type) to identify sets of cellular states within single cell data. ResidPCA leverages log-normalized TP10k data with known cell type labels to estimate a set of cellular states that are independent of cell type. The method first removes cell type-driven noise from the expression matrix and then applies PCA on the residucalized matrix to identify a set of denoised cellular states within and across cell types.
 
@@ -16,7 +16,7 @@ First, install the neccessary conda environment in which to run the ResidPCA Too
 ```
 conda env create -f environment.yml
 ```
-Note: ensure that [Miniconda](https://docs.anaconda.com/miniconda/install/) or (Conda)[https://anaconda.org/anaconda/conda] is installed within your computing system.
+Note: ensure that [Miniconda](https://docs.anaconda.com/miniconda/install/) or [Conda](https://anaconda.org/anaconda/conda) is installed within your computing system.
 
 Second, activate the Conda environment:
 ```
