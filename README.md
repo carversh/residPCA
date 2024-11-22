@@ -186,6 +186,8 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
 
 Outputs in command line:
 #embeddings/loadings output at BIC cuttoff or n_PCs specified
+  -`StandardPCA_gene_loadings.csv`
+  -`StandardPCA_cell_embeddings.csv`
 
 Outputs in Python object:
   - ```scExp.StandardPCA_cell_embeddings``` - cell embeddings outputted by Standard PCA
@@ -214,6 +216,8 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
 
 Outputs in command line:
 #embeddings/loadings output at BIC cuttoff or n_PCs specified
+  -`ResidPCA_gene_loadings.csv`
+  -`ResidPCA_cell_embeddings.csv`
 
 Outputs in Python object:
   - ```scExp.CondPCA_cell_embeddings``` - cell embeddings outputted by Conditional PCA
@@ -226,7 +230,6 @@ Outputs in Python object:
 Command line example  command:
 ```
 ResidPCA Iter_PCA_fit 
-
 ```
 
 Python environment example command:
@@ -235,8 +238,13 @@ scExp.Iter_PCA_fit()
 ```
 Returns the IterPCA output in the form of dictionaries, where each dictionary is equal to the length of the number of cell types. The keys of the dictionary correspond to the cell type in the "celltype" column of the metadata while the values of the dictionary represent the respective dataframe that corresponds to that cell type. 
 
-Outputs in command line:
+Outputs in command line (the following files will be generated as outputs):
 #embeddings/loadings output at BIC cuttoff or n_PCs specified
+- Iter_PCA_gene_loadings_*.csv
+  - Contains gene loadings data for each iteration.
+- Iter_PCA_cell_embeddings_*.csv
+  - Contains cell embeddings data for each iteration.
+The * in the filenames represents the name of the cell type as specified in the metadata. For each cell type, a pair of files (gene loadings and cell embeddings) will be outputted.
 
 Outputs in Python object:
   - ```scExp.IterPCA_cell_embeddings``` - dictionary containing the cell embeddings outputted by Iterative PCA per cell type
