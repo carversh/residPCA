@@ -195,7 +195,7 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
   - ```scExp.StandardPCA_eigenvalues``` - eigenvalues outputted by Standard PCA
   - ```scExp.StandardPCA_BIC_cutoff``` - PC cutoff that specifies the maximum state that is significant. For significant states, subset the cell embeddings and gene loadings from PC1 to the PC specified in this variable
 
-### Step 5 - perform Conditional PCA (CondPCA)
+### Step 5 - perform Residual PCA (ResidPCA)
 
 Command line example  command:
 ```
@@ -240,7 +240,6 @@ Returns the IterPCA output in the form of dictionaries, where each dictionary is
 
 **Outputs in command line** (the following files will be generated as outputs):
 
-embeddings/loadings output at BIC cuttoff or n_PCs specified
 - `Iter_PCA_cell_embeddings_*.csv`: contains cell embeddings data for each iteration. 
 - `Iter_PCA_gene_loadings_*.csv`: contains gene loadings data for each iteration.
 
