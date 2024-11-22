@@ -39,6 +39,17 @@ To deactivate this environment run:
 ```
 conda deactivate ResidPCA_Toolkit
 ```
+# Tutorials
+
+Command Line Interface:
+  - A bash script demonstrating an example run of the pipeline for **simulated data** is available [here]().
+  - A bash script for **real data** is available [here]().
+
+Python Environment:
+  - A Python script performing the same task for **simulated data** is provided [here]().
+  - A Python script for **real data** is provided [here]().
+
+The next section offers a detailed, step-by-step guide explaining each command in the process.
 
 # Step by Step Guide 
 
