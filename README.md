@@ -239,9 +239,12 @@ scExp.Iter_PCA_fit()
 Returns the IterPCA output in the form of dictionaries, where each dictionary is equal to the length of the number of cell types. The keys of the dictionary correspond to the cell type in the "celltype" column of the metadata while the values of the dictionary represent the respective dataframe that corresponds to that cell type. 
 
 Outputs in command line (the following files will be generated as outputs):
-#embeddings/loadings output at BIC cuttoff or n_PCs specified
+
+embeddings/loadings output at BIC cuttoff or n_PCs specified
+- `Iter_PCA_cell_embeddings_*.csv`: contains cell embeddings data for each iteration. 
 - `Iter_PCA_gene_loadings_*.csv`: contains gene loadings data for each iteration.
-- `Iter_PCA_cell_embeddings_*.csv`: contains cell embeddings data for each iteration.
+
+The state embeddings and gene loadings are outputted at the BIC cutoff if the BIC cutoff is flagged. If not, the specified number of PCs parameterized by `n_PCs` will be used.
 The * in the filenames represents the name of the cell type as specified in the metadata. For each cell type, a pair of files (gene loadings and cell embeddings) will be outputted.
 
 Outputs in Python object:
