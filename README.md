@@ -48,7 +48,7 @@ The ResidPCA Toolkit can be run from the command line or the same steps can be r
 
 Command line example  command:
 ```
- python ResidPCA Initialize \
+ResidPCA Initialize \
      --count_matrix_path ./examples/example_data.h5ad \
      --vars_to_regress Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
      --object_columns Batch,celltype,Sex \
@@ -62,7 +62,6 @@ Command line example  command:
 ```
 
 Python environment example command:
-
 ```
 scExp = residPCA(
     count_matrix_path="./examples/example_data.h5ad",
@@ -125,28 +124,59 @@ Use sparse PCA. Disabled by default.
 
 ### Step 2 - log-normalize the count data
 
-Example command:
+Command line example  command:
+```
+ResidPCA Normalize 
 
+```
+
+Python environment example command:
 ```
 scExp.Normalize()
 ```
 
+Parameters
+- `--path_to_directory` (str, optional):
+Path to the output directory. Default is "./".
+- `--basename` (str, optional):
+Basename for output files. Default is residPCA_run_<current_datetime>.
+
 ### Step 3 - standardize the count data
 
-Example command:
+Command line example  command:
+```
+ResidPCA Standardize 
 
+```
+Python environment example command:
 ```
 scExp.Standardize()
 ```
+Parameters
+- `--path_to_directory` (str, optional):
+Path to the output directory. Default is "./".
+- `--basename` (str, optional):
+Basename for output files. Default is residPCA_run_<current_datetime>.
 
 ### Step 4 - perform Standard PCA
 
-Example command:
+Command line example  command:
+```
+ResidPCA StandardPCA_fit 
 
+```
+
+Python environment example command:
 ```
 scExp.StandardPCA_fit()
 ```
 Returns the Standard PCA output in the form of dataframes. 
+
+Parameters
+- `--path_to_directory` (str, optional):
+Path to the output directory. Default is "./".
+- `--basename` (str, optional):
+Basename for output files. Default is residPCA_run_<current_datetime>.
 
 Outputs
   - ```scExp.StandardPCA_cell_embeddings``` - cell embeddings outputted by Standard PCA
@@ -156,12 +186,23 @@ Outputs
 
 ### Step 5 - perform Conditional PCA (CondPCA)
 
-Example command:
+Command line example  command:
+```
+ResidPCA ResidPCA_fit 
 
 ```
-scExp.CondPCA_fit()
+
+Python environment example command:
+```
+scExp.ResidPCA_fit()
 ```
 Returns the CondPCA output in the form of dataframes. 
+
+Parameters
+- `--path_to_directory` (str, optional):
+Path to the output directory. Default is "./".
+- `--basename` (str, optional):
+Basename for output files. Default is residPCA_run_<current_datetime>.
 
 Outputs
   - ```scExp.CondPCA_cell_embeddings``` - cell embeddings outputted by Conditional PCA
@@ -171,8 +212,13 @@ Outputs
 
 ### Step 6 - perform Iterative PCA (IterPCA)
 
-Example command:
+Command line example  command:
+```
+ResidPCA Iter_PCA_fit 
 
+```
+
+Python environment example command:
 ```
 scExp.Iter_PCA_fit()
 ```
@@ -189,8 +235,13 @@ Warning
 
 ### Step 7 - identify states that are cell type specific and states that span all cell types
 
-Example command:
+Command line example  command:
+```
+ResidPCA ID_Global_CellType_States 
 
+```
+
+Python environment example command:
 ```
 scExp.ID_Global_CellType_States()
 ```
@@ -205,6 +256,8 @@ Outputs
 
  If ```save_image_outputs == True```:
    - example
+   
+### Step 7 - output BED files for heritability analysis
 
 # Image Outputs
 
