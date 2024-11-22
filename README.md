@@ -46,28 +46,35 @@ The ResidPCA Toolkit can be run from the command line or the same steps can be r
 
 ### Step 1 - instantiate a class with your input data
 
-Command line command:
+Command line example  command:
 ```
-python residPCA.py Initialize \
-    --count_matrix_path ./examples/example_data.h5ad \
-    --object_columns Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
-    --variable_genes_flavor seurat \
-    --vars_to_regress Batch,celltype,total_counts \
-    --n_PCs 150 \
-    --random_seed 42 \
-    --vargenes_IterPCA 3000 \
-    --vargenes_Stand_resid 3000 \
-    --BIC \
-    --save_image_outputs \
-    --basename test_run \
-    --global_ct_cutoff 0.2
+ python ResidPCA Initialize \
+     --count_matrix_path ./examples/example_data.h5ad \
+     --vars_to_regress Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
+     --object_columns Batch,celltype,Sex \
+     --variable_genes_flavor seurat \
+     --n_PCs 150 \
+     --vargenes_IterPCA 3000 \
+     --vargenes_Stand_resid 3000 \
+     --BIC \
+     --save_image_outputs
 
 ```
 
-Python environment command:
+Python environment example command:
 
 ```
-scExp = condPCA(count_matrix_path="matrix.txt", metadata_path="metadata.txt", object_columns=['Batch', 'Sex','celltype'], save_image_outputs=False, BIC=True)
+scExp = residPCA(
+    count_matrix_path="./examples/example_data.h5ad",
+    vars_to_regress=['Batch', 'celltype', 'total_counts', 'pct_counts_mt', 'Age', 'Sex'],
+    object_columns=['Batch', 'Sex', 'celltype'],
+    variable_genes_flavor="seurat",
+    n_PCs=150,
+    vargenes_IterPCA=3000,
+    vargenes_Stand_resid=3000,
+    BIC=True,
+    save_image_outputs=True,
+)
 
 ```
 
@@ -78,6 +85,10 @@ Input Data
 Parameters
 - `--count_matrix_path` (str, required):
 Path to the count matrix file.
+`--metadata_path` (str, optional):
+Path to the metadata file. Default is None.
+- `--vars_to_regress` (str, optional):
+Comma-separated list of variables to regress. Default is True.
 - `--object_columns` (str, required):
 Comma-separated list of object columns.
 - `--variable_genes_flavor` (str, optional):
@@ -87,18 +98,14 @@ Specifies the flavor of variable genes to use. Options include:
     -`seurat_v3`
     -`seurat_v3_paper`
 Default is seurat_v3.
-`--metadata_path` (str, optional):
-Path to the metadata file. Default is None.
-- `--vars_to_regress` (str, optional):
-Comma-separated list of variables to regress. Default is True.
 - `--n_PCs` (int, optional):
 Number of principal components to compute. Default is 200.
 - `--random_seed` (int, optional):
 Random seed for reproducibility. Default is 9989999.
-- `--vargenes_IterPCA` (int or str, optional):
-Variable genes for iterative PCA. Accepts an integer or all. Default is all.
 - `--vargenes_Stand_resid` (int or str, optional):
-Variable genes for standard residual PCA. Accepts an integer or all. Default is all.
+Number of variable genes to use for Standard PCA and ResidPCA. Accepts an integer or all. Default is all meaning all genes are included in analysis.
+- `--vargenes_IterPCA` (int or str, optional):
+Number of variable genes to use for Iterative PCA. Accepts an integer or all. Default is all meaning all genes are included in analysis.
 - `--BIC` (bool, optional):
 Use BIC for model selection. Enabled by default.
 - `--no_BIC` (bool, optional):
