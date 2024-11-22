@@ -12,11 +12,11 @@ The pre-print is available [here]().
 
 # Installation
 
-First, install the neccessary conda environment in which to run the ResidPCA Toolkit (the environment configuration file can be found (here)[https://github.com/carversh/residPCA/blob/main/environment.yml]):
+First, install the neccessary conda environment in which to run the ResidPCA Toolkit (the environment configuration file can be found [here](https://github.com/carversh/residPCA/blob/main/environment.yml):
 ```
 conda env create -f environment.yml
 ```
-Note: ensure that (Miniconda)[https://docs.anaconda.com/miniconda/install/] or (Conda)[https://anaconda.org/anaconda/conda] is installed within your computing system.
+Note: ensure that [Miniconda](https://docs.anaconda.com/miniconda/install/) or (Conda)[https://anaconda.org/anaconda/conda] is installed within your computing system.
 
 Second, activate the Conda environment:
 ```
