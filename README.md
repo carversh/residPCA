@@ -86,11 +86,11 @@ scExp = residPCA(
 )
 ```
 
-Input Data
+**Input Data**
   - ```count_matrix_path``` - points to the .h5ad object or tab delimited file that is cells by genes dimensional, where rownames correspond to the barcoded cells and columnnames correspond to the genes.
   - ```metadata_path``` - IF metadata is not included in the .h5ad object, this parameter points to the tab delimited file that is cells by covariates/features dimensional.There must be a single column with a column name "celltype" that contains the cell type labels corresponding to each barcoded cell in the count matrix.
 
-Parameters
+**Parameters:**
 - `--count_matrix_path` (str, required):
 Path to the count matrix file.
 `--metadata_path` (str, optional):
@@ -143,7 +143,7 @@ Python environment example command:
 scExp.Normalize()
 ```
 
-Parameters
+**Parameters:**
 - `--path_to_directory` (str, optional):
 Path to the output directory. Default is "./".
 - `--basename` (str, optional):
@@ -159,7 +159,7 @@ Python environment example command:
 ```
 scExp.Standardize()
 ```
-Parameters
+**Parameters:**
 - `--path_to_directory` (str, optional):
 Path to the output directory. Default is "./".
 - `--basename` (str, optional):
@@ -178,18 +178,18 @@ scExp.StandardPCA_fit()
 ```
 Returns the Standard PCA output in the form of dataframes. 
 
-Parameters
+**Parameters:**
 - `--path_to_directory` (str, optional):
 Path to the output directory. Default is "./".
 - `--basename` (str, optional):
 Basename for output files. Default is residPCA_run_<current_datetime>.
 
-Outputs in command line:
+**Outputs in command line:**
 #embeddings/loadings output at BIC cuttoff or n_PCs specified
   -`StandardPCA_gene_loadings.csv`
   -`StandardPCA_cell_embeddings.csv`
 
-Outputs in Python object:
+**Outputs in Python object:**
   - ```scExp.StandardPCA_cell_embeddings``` - cell embeddings outputted by Standard PCA
   - ```scExp.StandardPCA_gene_loadings``` - gene loadings or eigenvectors outputted by Standard PCA
   - ```scExp.StandardPCA_eigenvalues``` - eigenvalues outputted by Standard PCA
@@ -208,18 +208,18 @@ scExp.ResidPCA_fit()
 ```
 Returns the CondPCA output in the form of dataframes. 
 
-Parameters
+**Parameters:**
 - `--path_to_directory` (str, optional):
 Path to the output directory. Default is "./".
 - `--basename` (str, optional):
 Basename for output files. Default is residPCA_run_<current_datetime>.
 
-Outputs in command line:
+**Outputs in command line:**
 #embeddings/loadings output at BIC cuttoff or n_PCs specified
   -`ResidPCA_gene_loadings.csv`
   -`ResidPCA_cell_embeddings.csv`
 
-Outputs in Python object:
+**Outputs in Python object:**
   - ```scExp.CondPCA_cell_embeddings``` - cell embeddings outputted by Conditional PCA
   - ```scExp.CondPCA_gene_loadings``` - gene loadings or eigenvectors outputted by Conditional PCA
   - ```scExp.CondPCA_eigenvalues``` - eigenvalues outputted by Conditional PCA
@@ -238,7 +238,7 @@ scExp.Iter_PCA_fit()
 ```
 Returns the IterPCA output in the form of dictionaries, where each dictionary is equal to the length of the number of cell types. The keys of the dictionary correspond to the cell type in the "celltype" column of the metadata while the values of the dictionary represent the respective dataframe that corresponds to that cell type. 
 
-Outputs in command line (the following files will be generated as outputs):
+**Outputs in command line** (the following files will be generated as outputs):
 
 embeddings/loadings output at BIC cuttoff or n_PCs specified
 - `Iter_PCA_cell_embeddings_*.csv`: contains cell embeddings data for each iteration. 
@@ -247,7 +247,7 @@ embeddings/loadings output at BIC cuttoff or n_PCs specified
 The state embeddings and gene loadings are outputted at the BIC cutoff if the BIC cutoff is flagged. If not, the specified number of PCs parameterized by `n_PCs` will be used.
 The * in the filenames represents the name of the cell type as specified in the metadata. For each cell type, a pair of files (gene loadings and cell embeddings) will be outputted.
 
-Outputs in Python object:
+**Outputs in Python object:**
   - ```scExp.IterPCA_cell_embeddings``` - dictionary containing the cell embeddings outputted by Iterative PCA per cell type
   - ```scExp.IterPCA_gene_loadings``` - dictionary containing the gene loadings outputted by Iterative PCA per cell type
   - ```scExp.IterPCA_eigenvalues``` - dictionary containing the gene eigenvalues outputted by Iterative PCA per cell type
@@ -272,7 +272,7 @@ Returns a dataframe for StandardPCA based states and CondPCA based states. Retur
 
 Note: This method labels each state identified in StandardPCA and CondPCA as a global state, or a state spanning multiple cell types, or cell type specific states, or a state within a specific cell type. Additionally, this method labels which states belong to which cell types. To perform this method, ```scExp.Iter_PCA_fit()``` must be run beforehand and at least ```scExp.StandardPCA_fit()``` or ```scExp.CondPCA_fit()```  must be run. If only ```scExp.CondPCA_fit()``` is run, only the states belonoging to CondPCA will be evaluated, if only ```scExp.StandardPCA_fit()``` is run, only the states belonging to StandardPCA will be evaluated, if both are run, both will be evaluated.
 
-Outputs 
+**Outputs **
  -```scExp.StandardPCA_IterPCA_squared_correlations``` - dataframe containing each state from StandardPCA and a row and the maximum correlation with a certain run of IterPCA (columns are labeled by IterPCA run on that given cell type). Two additional columns are included called "CT_involved", which tells you which cell types are involved in the state, and "Global_vs_CT", which tell you whether the state is global or cell type specific.
  - ```scExp.CondPCA_IterPCA_squared_correlations``` - dataframe containing each state from CondPCA and a row and the maximum correlation with a certain run of IterPCA (columns are labeled by IterPCA run on that given cell type). Two additional columns are included called "CT_involved", which tells you which cell types are involved in the state, and "Global_vs_CT", which tell you whether the state is global or cell type specific.
 
