@@ -43,11 +43,11 @@ conda deactivate ResidPCA_Toolkit
 
 Command Line Interface:
   - A bash script demonstrating an example run of the pipeline for **simulated data** is available [here]().
-  - A bash script for **real data** is available [here](https://github.com/carversh/residPCA/blob/main/examples/example_implementation.py).
+  - A bash script for **real data** is available [here](https://github.com/carversh/residPCA/blob/main/examples/example_implementation.sh).
 
 Python Environment:
   - A Python script performing the same task for **simulated data** is provided [here]().
-  - A Python script for **real data** is provided [here](https://github.com/carversh/residPCA/blob/main/examples/example_implementation.sh).
+  - A Python script for **real data** is provided [here](https://github.com/carversh/residPCA/blob/main/examples/example_implementation.py).
 
 The next section offers a detailed, step-by-step guide explaining each command in the process.
 
