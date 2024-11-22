@@ -127,7 +127,6 @@ Use sparse PCA. Disabled by default.
 Command line example  command:
 ```
 ResidPCA Normalize 
-
 ```
 
 Python environment example command:
@@ -146,7 +145,6 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
 Command line example  command:
 ```
 ResidPCA Standardize 
-
 ```
 Python environment example command:
 ```
@@ -163,7 +161,6 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
 Command line example  command:
 ```
 ResidPCA StandardPCA_fit 
-
 ```
 
 Python environment example command:
@@ -189,7 +186,6 @@ Outputs
 Command line example  command:
 ```
 ResidPCA ResidPCA_fit 
-
 ```
 
 Python environment example command:
@@ -238,7 +234,6 @@ Warning
 Command line example  command:
 ```
 ResidPCA ID_Global_CellType_States 
-
 ```
 
 Python environment example command:
