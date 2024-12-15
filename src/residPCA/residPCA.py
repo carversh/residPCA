@@ -28,7 +28,7 @@ class residPCA(object):
                  BIC=True, 
                  save_image_outputs = False, 
                  path_to_directory = "./", 
-                 basename=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}',  
+                 basename=f'ResidPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}',  
                  global_ct_cutoff=0.2,
                  logged=False,
                  sparse_PCA=False):
@@ -59,7 +59,9 @@ class residPCA(object):
                 self.directory_path = directory_path
             else:
                 raise ValueError(f"Directory '{directory_path}' already exists.")
-            
+        
+        self.path_to_directory = path_to_directory 
+        self.basename = basename 
         self.count_matrix_path = count_matrix_path
         self.var_flavor = variable_genes_flavor
                 
@@ -636,7 +638,7 @@ class residPCA(object):
         label=PCA_type.replace(" ", "_")
         plt.savefig(f'{self.directory_path}/{label}_cell_type_distribution.png', bbox_inches='tight')
         plt.close()
-    
+
     def ID_Global_CellType_States(self):
         # subset to BIC cutoff if dataset is present
         if hasattr(self, 'StandardPCA_gene_loadings'):
@@ -750,6 +752,93 @@ class residPCA(object):
             raise ValueError("Only Iterative PCA has been performed, must perform both/either Standard or residPCA as well.")
         else:
             raise ValueError("No processed datasets to compare.")
+
+    def _output_bed_herit(self, df, ref_annotations_file, num_genes, method, window, key=None): 
+        # check  BIC exists
+        method_to_attribute = {
+            "Iter": "IterPCA_BIC_cutoff",
+            "Resid": "residPCA_BIC_cutoff",
+            "Standard": "StandardPCA_BIC_cutoff",
+        }
+
+        # Check if the method is valid and the corresponding attribute exists
+        if method in method_to_attribute:
+            if not hasattr(self, method_to_attribute[method]): 
+                raise ValueError("Please rerun BIC=True")
+            else: 
+                if method == "Iter":
+                    BIC = getattr(self, method_to_attribute[method])[key] 
+                else:
+                    BIC = getattr(self, method_to_attribute[method]) 
+        else:
+            raise ValueError(f"Invalid method: {method}")
+        # sort df
+        loads = df.loc[:,:BIC]
+        bed = pd.read_csv(
+        ref_annotations_file, 
+        sep="\t", 
+        header=None
+        )
+
+        # Modify bed file coordinates
+        bed[1] = bed[1] - window  # Adjust start coordinate
+        bed.loc[bed[1] < 0, 1] = 0  # Ensure start coordinate is non-negative
+        bed[2] = bed[2] + window  # Adjust end coordinate
+
+        # Match rows of bed to rownames of loads
+        bed = bed.loc[bed[3].isin(loads.index)].reset_index(drop=True)
+
+        # Filter rows with non-NA values
+        keep = bed[3].notna()
+        bed = bed[keep]
+        loads = loads.loc[bed[3]]
+
+        # Determine the number of rows to keep
+        keep_n = int(min(len(loads) * 0.1, num_genes))
+
+        # Iterate over the columns of loads
+        for i in range(loads.shape[1]):
+            # Select the top rows
+            top_indices = loads.iloc[:, i].nlargest(keep_n).index
+            top_bed = bed.loc[bed[3].isin(top_indices)]
+            top_bed.to_csv(
+                f"{self.path_to_directory}{self.basename}/heritability/{method}{'_' + key if key else ''}_PCA_top{keep_n}_PC{i+1}.bed",  
+                sep="\t", 
+                header=False, 
+                index=False, 
+                quoting=3
+            )
+            
+            # Select the bottom rows
+            bottom_indices = loads.iloc[:, i].nsmallest(keep_n).index
+            bottom_bed = bed.loc[bed[3].isin(bottom_indices)]
+            bottom_bed.to_csv(
+                f"{self.path_to_directory}{self.basename}/heritability/{method}{'_' + key if key else ''}_PCA_bot{keep_n}_PC{i+1}.bed", 
+                sep="\t", 
+                header=False, 
+                index=False, 
+                quoting=3
+            )
+
+    def heritability_bed_output(self,ref_annotations_file, num_genes, method, window=100e3):
+
+        # create folder to save bed files
+        new_folder_path = os.path.join(self.path_to_directory, self.basename, "heritability")
+        os.makedirs(new_folder_path, exist_ok=True)
+
+        if method == "Iter":
+            for key in scExp.IterPCA_gene_loadings.keys():
+                self._output_bed_herit(self.IterPCA_gene_loadings[key], ref_annotations_file, num_genes, method, window, key) 
+
+        elif method == "Resid":
+            self._output_bed_herit(self.residPCA_gene_loadings, ref_annotations_file, num_genes, method, window) 
+
+        elif method == "Standard":
+            self._output_bed_herit(self.StandardPCA_gene_loadings, ref_annotations_file, num_genes, method, window) 
+
+        else:
+            print("Invalid method. Please enter one of the following: Iter, Resid, Standard")
+            return
 
 def main():
 
