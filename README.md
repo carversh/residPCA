@@ -186,7 +186,7 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
 
 **Outputs in command line:**
 
-#embeddings/loadings output at BIC cuttoff or n_PCs specified
+# embeddings/loadings output at BIC cuttoff or n_PCs specified
   -`StandardPCA_gene_loadings.csv`
   -`StandardPCA_cell_embeddings.csv`
 
@@ -217,7 +217,7 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
 
 **Outputs in command line:**
 
-#embeddings/loadings output at BIC cuttoff or n_PCs specified
+# embeddings/loadings output at BIC cuttoff or n_PCs specified
   -`ResidPCA_gene_loadings.csv`
   -`ResidPCA_cell_embeddings.csv`
 
