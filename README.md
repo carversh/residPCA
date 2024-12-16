@@ -82,7 +82,7 @@ scExp = residPCA(
     vargenes_IterPCA=3000,
     vargenes_Stand_resid=3000,
     BIC=True,
-    save_image_outputs=True,
+    save_image_outputs=True
 )
 ```
 
@@ -331,3 +331,94 @@ Window size (in base pairs) for annotations upstream and downstream of the gene.
 When initializing your experiment, if you set ```save_image_outputs = True```, a directory will be created that will contain all image based outputs from the method. Different commands will yield different image outputs depending on the task of the command. All relevant images and data will be saved to a directory called ```basename``` with the initial appended path ```path_to_directory```.
 
 # Low Memory Setting
+
+
+Here’s an improved version of your write-up, providing more clarity, structure, and a professional tone:
+
+The low-memory mode is designed to reduce memory usage by limiting the number of intermediate outputs saved during computation. As a result, it can only run one method at a time. For instance, low-memory mode can execute either ResidPCA or Standard PCA in a single instance, but it cannot handle both simultaneously.
+
+Currently, low-memory support for Iterative PCA is still under development.
+
+In this mode, several intermediate matrices are not stored in memory to conserve resources. These include:
+
+- Normalized count matrices
+- Standardized count matrices
+- Metadata
+- The residualized matrix (specific to ResidPCA)
+
+Despite these limitations, the key outputs—cell embeddings and gene loadings—are still saved and remain accessible for downstream analyses.
+
+If you want to run ResidPCA, instantiate your class with the ```lowmem=True``` and either run ```ResidPCA_fit()``` or ```StandardPCA_fit()```.
+
+Command line example  command:
+```
+ResidPCA Initialize \
+     --count_matrix_path ./examples/example_data.h5ad \
+     --vars_to_regress Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
+     --object_columns Batch,celltype,Sex \
+     --variable_genes_flavor seurat \
+     --n_PCs 150 \
+     --vargenes_IterPCA 3000 \
+     --vargenes_Stand_resid 3000 \
+     --BIC \
+     --save_image_outputs \
+     --basename test_run_LOWMEM \
+     --path_to_directory ./ \
+     --lowmem
+     
+ResidPCA Normalize --basename test_run_LOWMEM --path_to_directory ./
+ResidPCA Standardize --basename test_run --path_to_directory ./
+ResidPCA residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
+```
+
+Python environment example command:
+```
+scExp = residPCA(
+    count_matrix_path="./examples/example_data.h5ad",
+    vars_to_regress=['Batch', 'celltype', 'total_counts', 'pct_counts_mt', 'Age', 'Sex'],
+    object_columns=['Batch', 'Sex', 'celltype'],
+    variable_genes_flavor="seurat",
+    n_PCs=150,
+    vargenes_IterPCA=3000,
+    vargenes_Stand_resid=3000,
+    BIC=True,
+    save_image_outputs=True,
+    lowmem=True
+)
+
+scExp.Normalize() 
+scExp.Standardize()
+```
+
+Once you have instantiated your class and Normalized and Standardized you must **either** run ResidPCA or StandardPCA:
+
+For ResidPCA:
+
+Command line example  command:
+```
+ResidPCA residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
+```
+
+Python environment example command:
+
+```
+scExp.residPCA_fit()
+```
+
+For StandardPCA:
+
+Command line example  command:
+```
+StandardPCA residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
+```
+
+Python environment example command:
+
+
+```
+scExp.StandardPCA_fit()
+```
+
+** These are the same steps as the step by step directions, but in the lowmem setting, the package can only be run up until this point.
+
+
