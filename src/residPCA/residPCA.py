@@ -827,7 +827,7 @@ class residPCA(object):
         os.makedirs(new_folder_path, exist_ok=True)
 
         if method == "Iter":
-            for key in scExp.IterPCA_gene_loadings.keys():
+            for key in self.IterPCA_gene_loadings.keys():
                 self._output_bed_herit(self.IterPCA_gene_loadings[key], ref_annotations_file, num_genes, method, window, key) 
 
         elif method == "Resid":
@@ -863,7 +863,7 @@ def main():
 
     # Step 1: Parse the `command` argument
     main_parser = argparse.ArgumentParser(description="Arguments for the residPCA class from command line.")
-    main_parser.add_argument('command', type=str, choices=['Initialize', 'Normalize', 'Standardize', 'StandardPCA_fit', 'residPCA_fit', 'Iter_PCA_fit', 'ID_Global_CellType_States'])
+    main_parser.add_argument('command', type=str, choices=['Initialize', 'Normalize', 'Standardize', 'StandardPCA_fit', 'residPCA_fit', 'Iter_PCA_fit', 'ID_Global_CellType_States','heritability_bed_output'])
     args, remaining_argv = main_parser.parse_known_args()
 
     # Step 2: Handle each command separately
@@ -920,7 +920,7 @@ def main():
         save_object(scExp, init_args.path_to_directory, init_args.basename, obj_file)
 
     # check if args.command is not "initialize"
-    elif args.command in ["Normalize", "Standardize", "StandardPCA_fit", "residPCA_fit", "Iter_PCA_fit", "ID_Global_CellType_States"]:
+    elif args.command in ["Normalize", "Standardize", "StandardPCA_fit", "residPCA_fit", "Iter_PCA_fit", "ID_Global_CellType_States",]:
         parser = argparse.ArgumentParser(description="Normalize residPCA data.")
         parser.add_argument('--path_to_directory', type=str, default="./", help="Path to output directory.")
         parser.add_argument('--basename', type=str, default=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}', help="Basename for output files.")
@@ -967,7 +967,35 @@ def main():
             print("Identifying Global and Cell Type Specific States.")           
             scExp.ID_Global_CellType_States()
 
-        save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file)       
+        save_object(scExp, norm_args.path_to_directory, norm_args.basename, obj_file) 
+    
+    elif args.command == "heritability_bed_output":
+        # need to parse new arguments here
+        parser = argparse.ArgumentParser(description="Output bed files for heritability analysis.")
+        parser.add_argument('--path_to_directory', type=str, default="./", help="Path to output directory.")
+        parser.add_argument('--basename', type=str, default=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}', help="Basename for output files.")
+        parser.add_argument('--ref_annotations_file', type=str, required=True, help="Path to the reference annotations file.")
+        parser.add_argument('--num_genes', type=int, default=200, help="Number of genes to include in annotation.")
+        parser.add_argument('--method', type=str, choices=["Iter", "Resid", "Standard"], required=True, help="PCA loadings to pull from when creating annotations.")
+        parser.add_argument('--window', type=float, default=100e3, help="Window size.")
+
+        # Parse the remaining arguments
+        herit_args = parser.parse_args(remaining_argv)
+
+        scExp = load_object(herit_args.path_to_directory, herit_args.basename, obj_file)
+
+        if herit_args.method in ["Iter", "Resid", "Standard"]:
+            scExp.heritability_bed_output(
+                ref_annotations_file=herit_args.ref_annotations_file,
+                num_genes=herit_args.num_genes,
+                method=herit_args.method,
+                window=herit_args.window
+            )
+        else:
+            raise ValueError("Invalid method. Please choose one of: Iter, Resid, Standard.")
+
+        save_object(scExp, herit_args.path_to_directory, herit_args.basename, obj_file) 
+      
 
     else:
         raise ValueError(f"Invalid command: {args.command}")
@@ -975,12 +1003,27 @@ def main():
 if __name__=="__main__":
     main()
 
+# python residPCA.py Initialize \
+#     --count_matrix_path /Users/shayecarver/residPCA/examples/example_data.h5ad \
+#     --vars_to_regress Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
+#     --variable_genes_flavor seurat \
+#     --object_columns Batch,celltype \
+#     --n_PCs 150 \
+#     --random_seed 42 \
+#     --vargenes_IterPCA 3000 \
+#     --vargenes_Stand_resid 3000 \
+#     --BIC \
+#     --save_image_outputs \
+#     --basename test_run \
+#     --global_ct_cutoff 0.2
+
+#==============
 
 # python residPCA.py Initialize \
 #     --count_matrix_path /Users/shayecarver/condPCA/Morabito/RNA/data/Morabito_RNA_QC_RAW_COUNTS.h5ad \
 #     --object_columns Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
 #     --variable_genes_flavor seurat_v3 \
-#     --vars_to_regress Batch,celltype,total_counts \
+#     --vars_to_regress Batch,celltype \
 #     --n_PCs 150 \
 #     --random_seed 42 \
 #     --vargenes_IterPCA 3000 \
@@ -1001,3 +1044,9 @@ if __name__=="__main__":
 # python residPCA.py Iter_PCA_fit --basename test_run --path_to_directory ./
 
 # python residPCA.py ID_Global_CellType_States --basename test_run --path_to_directory ./
+
+# python residPCA.py heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Resid
+
+# python residPCA.py heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Standard
+
+# python residPCA.py heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Iter
