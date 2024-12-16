@@ -306,7 +306,7 @@ scExp.heritability_bed_output("~/residPCA/gencode.v39.basic.annotation.names.bed
 
 **Input Data**
   - ```ref_annotations_file``` - This is the reference file containing genomic annotations, such as gene names and chromosomal positions.
-Example file: ```[gencode.v39.basic.annotation.names.bed](https://github.com/carversh/residPCA/blob/main/gencode.v39.basic.annotation.names.bed)``` (provided in the repository).
+Example file: [gencode.v39.basic.annotation.names.bed](https://github.com/carversh/residPCA/blob/main/gencode.v39.basic.annotation.names.bed) (provided in the repository).
   It contains:
     Gene names.
     Chromosomal start and end positions.
