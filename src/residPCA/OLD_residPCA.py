@@ -31,7 +31,6 @@ class residPCA(object):
                  basename=f'ResidPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}',  
                  global_ct_cutoff=0.2,
                  logged=False,
-                 lowmem=False,
                  sparse_PCA=False):
         """
         Parameters
@@ -65,25 +64,26 @@ class residPCA(object):
         self.basename = basename 
         self.count_matrix_path = count_matrix_path
         self.var_flavor = variable_genes_flavor
-        self.lowmem = lowmem
                 
-        self.count_matrix = scanpy.read(count_matrix_path) # cells x genes, pd.read_csv(count_matrix_path, sep='\t', header=0, index_col=0)
+        count_matrix = scanpy.read(count_matrix_path) # cells x genes, pd.read_csv(count_matrix_path, sep='\t', header=0, index_col=0)
         
         self.vargenes_Stand_resid = vargenes_Stand_resid # number of variable genes for standard and residpca
         if self.vargenes_Stand_resid == "all": # if all, make all genes are variable genes
-            self.count_matrix.var['highly_variable'] = True
+            count_matrix.var['highly_variable'] = True
             print("added column")
         else:
             if self.var_flavor == "seurat_v3":
                 try:
                     print("Finding most variable genes using 'seurat_v3' flavor.")
-                    scanpy.pp.highly_variable_genes(self.count_matrix, flavor='seurat_v3', n_top_genes=vargenes_Stand_resid)
+                    scanpy.pp.highly_variable_genes(count_matrix, flavor='seurat_v3', n_top_genes=vargenes_Stand_resid)
                 except Exception as e:
                     print(f"An error occurred: {e}")
                     print("Using 'seurat' flavor instead to compute variable genes on Standard PCA and residPCA.")
                     self.exception = True
             else:
                 pass
+
+        self.count_matrix = count_matrix.copy()
 
         # check if sparse counnt matrix and convert to dense if so
         if scipy.sparse.issparse(self.count_matrix.X):
@@ -92,40 +92,26 @@ class residPCA(object):
         # read in h5ad of txt file
         if not vars_to_regress: # if vars_to_regress is False or an empty list
             self.metadata = False
-        elif self.lowmem:
-            self.metadata = False
         else:
             if count_matrix_path.endswith('.txt'):
                 self.metadata = pd.read_csv(metadata_path, sep='\t', header=0, index_col=0)
             elif count_matrix_path.endswith('.h5ad'):
-                if not self.lowmem:
-                    self.metadata = self.count_matrix.obs.copy() 
+                self.metadata = self.count_matrix.obs.copy() 
             else:
                 raise ValueError("Count matrix must be in .txt or .h5ad format.")
         
-        if self.metadata is not False:
-            if isinstance(vars_to_regress, list): # if there is metadata to regress out and not lowmem
+        if self.metadata is not False: # if there is metadata to regress out
+            if isinstance(vars_to_regress, list):
                 self.vars_to_regress = pd.Index(vars_to_regress)
             else:
-                raise ValueError("vars_to_regress must be a list of variables to regress out.")
-        else: # if no self.metadata
-            if not self.lowmem:
                 self.vars_to_regress = self.metadata.columns
-            if self.lowmem:
-                if isinstance(vars_to_regress, list):
-                    self.vars_to_regress = pd.Index(vars_to_regress)
-                else:
-                    self.vars_to_regress = self.count_matrix.obs.columns
 
         if not object_columns: # if no object columns are specified
             pass
         else:
             # one hot encode necessary metadata variables
             self.object_columns = object_columns # obtain columns that must be one hot encoded
-            if not self.lowmem:
-                self.metadata[self.object_columns] = self.metadata[self.object_columns].astype(object) # convert these columns to objects
-            else:
-                self.count_matrix.obs[self.object_columns] = self.count_matrix.obs[self.object_columns].astype(object)
+            self.metadata[self.object_columns] = self.metadata[self.object_columns].astype(object) # convert these columns to objects
         
         self.random_seed = random_seed 
         np.random.seed(self.random_seed) # set random seed
@@ -176,14 +162,10 @@ class residPCA(object):
         # if some genes in counts matrix have zero standard deviation
         if np.any(np.std(self.count_matrix.X, axis=0) == 0):
             raise ValueError("Error: Some Genes have zero standard deviation.")
-        
-        if self.lowmem:
-            self.count_matrix.X = self._standardize(self.count_matrix.X)
-        else:
-            # only subset the matrix to the most variable genes
-            self.standardized_count_data = self._standardize(self.count_matrix.X)
+        # only subset the matrix to the most variable genes
+        self.standardized_count_data = self._standardize(self.count_matrix.X)
         # Process metadata/covariates for standardization:
-        if self.lowmem is False and self.metadata is not False:
+        if self.metadata is not False:
             # subset to only variables that you want to regress out
             self.metadata = self.metadata[self.vars_to_regress] 
             # WARNING IN FOLLOWING LINE BECAUSE CONVERTING OBJECT THAT LOOKS NUMERIC TO BE ONE HOT ENCODED, this is batch
@@ -191,14 +173,6 @@ class residPCA(object):
             # Convert factor covariates to dummy variables dropping one column 
             self.metadata = pd.get_dummies(self.metadata, drop_first=True) 
             self.standardized_metadata = self._standardize(self.metadata)
-        elif self.lowmem is True:
-            # DOES NOT PERFORM ITER PCA
-            self.count_matrix.obs = self.count_matrix.obs[self.vars_to_regress]
-            # Convert factor covariates to dummy variables dropping one column 
-            self.count_matrix.obs = pd.get_dummies(self.count_matrix.obs, drop_first=True) 
-            self.count_matrix.obs = self._standardize(self.count_matrix.obs)
-        else:
-            pass
     
     def _standardize(self, mat): # simple function performing standardization
         # compute means of genes or covariates
@@ -258,41 +232,38 @@ class residPCA(object):
         if self.BIC:
             if standardPCA:
                 # compute BIC
-                min_BIC_index = self._compute_BIC(eigenvalues, mat, "Standard PCA")
-                elbow_PC = self._compute_elbow(eigenvalues, mat, "Standard PCA")
+                min_BIC_index = self._compute_BIC(eigenvalues, self.standardized_residual, "Standard PCA")
+                elbow_PC = self._compute_elbow(eigenvalues, self.standardized_residual, "Standard PCA")
             if residPCA:
                 # compute BIC
-                min_BIC_index = self._compute_BIC(eigenvalues, mat, "residPCA")
-                elbow_PC = self._compute_elbow(eigenvalues, mat, "residPCA")
+                min_BIC_index = self._compute_BIC(eigenvalues, self.standardized_residual, "residPCA")
+                elbow_PC = self._compute_elbow(eigenvalues, self.standardized_residual, "residPCA")
             if iterPCA:
                 # compute BIC
-                min_BIC_index = self._compute_BIC(eigenvalues, mat, "IterPCA", iterPCA_CT)
-                elbow_PC = self._compute_elbow(eigenvalues, mat, "IterPCA", iterPCA_CT)
+                min_BIC_index = self._compute_BIC(eigenvalues, self.standardized_residual, "IterPCA", iterPCA_CT)
+                elbow_PC = self._compute_elbow(eigenvalues, self.standardized_residual, "IterPCA", iterPCA_CT)
             BIC_cutoff = "PC_" + (min_BIC_index + 1).astype(str)
             return cell_embeddings, gene_loadings, eigenvalues, BIC_cutoff, elbow_PC
         return cell_embeddings, gene_loadings, eigenvalues, "Not Calculated", "Not Calculated"
     
     def _fit_model(self, standardized_metadata, standardized_count_data, standardPCA=False, residPCA = False, iterPCA=False, iterPCA_genenames=False, iterPCA_cellnames=False, iterPCA_CT=False): # regress out covariates and then input into PCA
-        if self.lowmem:
-            return self._fit_pca(pd.DataFrame(self._regress_covariates(standardized_metadata = standardized_metadata, standardized_count_data= standardized_count_data), index = list(self.count_matrix.obs_names), columns = list(self.count_matrix.var_names[self.count_matrix.var['highly_variable']])), standardPCA=standardPCA, residPCA=residPCA, iterPCA=iterPCA, iterPCA_genenames=iterPCA_genenames, iterPCA_cellnames=iterPCA_cellnames, iterPCA_CT=iterPCA_CT)
-
-        else:
-            if standardized_metadata is not False: # if there is metadata to regress out
-                # regress out covariates (including celltype) and retrieve standardized residual
-                self.standardized_residual = self._regress_covariates(standardized_metadata = standardized_metadata, standardized_count_data= standardized_count_data) # REMOVE SELF  
-            else: # no metadata, perform pca on standardized counts matrix
-                print("No metadata to regress out.")
-                self.standardized_residual = standardized_count_data # REMOVE SELF      
-            # if not iterative PCA, able to add gene names and cell names here, but must subset if IterPCA
-            if not iterPCA: 
-                # return standardized residual as a dataframe with gene and cell names:
-                self.standardized_residual = pd.DataFrame(self.standardized_residual, index = list(self.count_matrix.obs_names), columns = list(self.count_matrix.var_names[self.count_matrix.var['highly_variable']]))# REMOVE SELF
-            if iterPCA:
-                # return standardized residual as a dataframe with gene and cell names of the given subset:
-                self.standardized_residual = pd.DataFrame(self.standardized_residual, index = list(iterPCA_cellnames), columns = list(iterPCA_genenames))# REMOVE SELF   
-            
-            # perform PCA on count matrix
-            return self._fit_pca(self.standardized_residual, standardPCA=standardPCA, residPCA=residPCA, iterPCA=iterPCA, iterPCA_genenames=iterPCA_genenames, iterPCA_cellnames=iterPCA_cellnames, iterPCA_CT=iterPCA_CT)
+        
+        if standardized_metadata is not False: # if there is metadata to regress out
+            # regress out covariates (including celltype) and retrieve standardized residual
+            self.standardized_residual = self._regress_covariates(standardized_metadata = standardized_metadata, standardized_count_data= standardized_count_data) # REMOVE SELF  
+        else: # no metadata, perform pca on standardized counts matrix
+            print("No metadata to regress out.")
+            self.standardized_residual = standardized_count_data # REMOVE SELF      
+        # if not iterative PCA, able to add gene names and cell names here, but must subset if IterPCA
+        if not iterPCA: 
+            # return standardized residual as a dataframe with gene and cell names:
+            self.standardized_residual = pd.DataFrame(self.standardized_residual, index = list(self.count_matrix.obs_names), columns = list(self.count_matrix.var_names[self.count_matrix.var['highly_variable']]))# REMOVE SELF
+        if iterPCA:
+            # return standardized residual as a dataframe with gene and cell names of the given subset:
+            self.standardized_residual = pd.DataFrame(self.standardized_residual, index = list(iterPCA_cellnames), columns = list(iterPCA_genenames))# REMOVE SELF   
+        
+        # perform PCA on count matrix
+        return self._fit_pca(self.standardized_residual, standardPCA=standardPCA, residPCA=residPCA, iterPCA=iterPCA, iterPCA_genenames=iterPCA_genenames, iterPCA_cellnames=iterPCA_cellnames, iterPCA_CT=iterPCA_CT)
 
     def _mapping_IterPCA_subset_dataframes_to_PCA(self, metadata, CT_exp_column): # function that subsets count matrix to a particular cell type and then performs PCA on that subset
         # remove "celltype_" from the string CT_exp_column
@@ -381,89 +352,69 @@ class residPCA(object):
         self.n_PCs = self.original_n_PCs
         
         
-        return output 
+        checking = output + (pd.DataFrame(log_norm_data_subset_to_CT, index = list(cellnames), columns = list(genenames)),)# remove FOR CHECKING
+        return output #checking## can remove final addition FOR CHECKING
     
     def residPCA_fit(self): 
-        if self.lowmem:
-            if hasattr(self, 'StandardPCA_cell_embeddings'):
-                raise ValueError("Cannot perform ResidPCA after performing StandardPCA in lowmem mode. Must restart and only perform StandardPCA_fit() after Standardize().")
-            elif hasattr(self, 'IterPCA_cell_embeddings'):
-                raise ValueError("Cannot perform Iterative PCA in lowmem mode.")
-            else:
-                self.residPCA_cell_embeddings, self.residPCA_gene_loadings, self.residPCA_eigenvalues, self.residPCA_BIC_cutoff, self.residPCA_elbow = self._fit_model(standardized_metadata=self.count_matrix.obs,standardized_count_data= self.count_matrix.X, residPCA = True) 
-        else:
-            if self.metadata is not False:
-                # fit linear model (regress out covariates) and fit PCA -- covariates contain cell type
-                self.residPCA_cell_embeddings, self.residPCA_gene_loadings, self.residPCA_eigenvalues, self.residPCA_BIC_cutoff, self.residPCA_elbow = self._fit_model(standardized_metadata=self.standardized_metadata,standardized_count_data= self.standardized_count_data, residPCA = True)
-            else: 
-                raise ValueError("Cannot perform residPCA. No celltype column specified in metadata")
+        if self.metadata is not False:     
+            # fit linear model (regress out covariates) and fit PCA -- covariates contain cell type
+            self.residPCA_cell_embeddings, self.residPCA_gene_loadings, self.residPCA_eigenvalues, self.residPCA_BIC_cutoff, self.residPCA_elbow = self._fit_model(standardized_metadata=self.standardized_metadata,standardized_count_data= self.standardized_count_data, residPCA = True)
+        else: 
+            raise ValueError("Cannot perform residPCA. No celltype column specified in metadata")
 
     def StandardPCA_fit(self):
-
-        if self.lowmem:
-            if hasattr(self, 'residPCA_cell_embeddings'):
-                raise ValueError("Cannot perform StandardPCA after performing ResidPCA in lowmem mode. Must restart and only perform StandardPCA_fit() after Standardize().")
-            elif hasattr(self, 'IterPCA_cell_embeddings'):
-                raise ValueError("Cannot perform Iterative PCA in lowmem mode.")
+        if self.metadata is not False: # if there is metadata to regress out
+            if all(col.startswith('celltype_') for col in self.metadata): # if only metadata provided that is celltype
+                print("Only celltype column provided in metadata. No covariates to regress out for Standard PCA.")
+                self.StandardPCA_cell_embeddings, self.StandardPCA_gene_loadings, self.StandardPCA_eigenvalues, self.StandardPCA_BIC_cutoff, self.StandardPCA_elbow = self._fit_model(standardized_metadata=False,standardized_count_data= self.standardized_count_data,standardPCA=True)
             else:
-                self.StandardPCA_cell_embeddings, self.StandardPCA_gene_loadings, self.StandardPCA_eigenvalues, self.StandardPCA_BIC_cutoff, self.StandardPCA_elbow  = self._fit_model(standardized_metadata=self.count_matrix.obs.drop(columns = self.count_matrix.obs.filter(like="celltype", axis=1).columns ),standardized_count_data= self.count_matrix.X,standardPCA=True)
-
-        else:
-            if self.metadata is not False: # if there is metadata to regress out
-                if all(col.startswith('celltype_') for col in self.metadata): # if only metadata provided that is celltype
-                    print("Only celltype column provided in metadata. No covariates to regress out for Standard PCA.")
-                    self.StandardPCA_cell_embeddings, self.StandardPCA_gene_loadings, self.StandardPCA_eigenvalues, self.StandardPCA_BIC_cutoff, self.StandardPCA_elbow = self._fit_model(standardized_metadata=False,standardized_count_data= self.standardized_count_data,standardPCA=True)
-                else:
-                    # remove celltype from covariate space
-                    standardized_metadata_minus_celltype = self.standardized_metadata.drop(columns = self.standardized_metadata.filter(like="celltype", axis=1).columns )
-                    # fit linear model (regress out covariates) and fit PCA -- covariates do not contain cell type
-                    self.StandardPCA_cell_embeddings, self.StandardPCA_gene_loadings, self.StandardPCA_eigenvalues, self.StandardPCA_BIC_cutoff, self.StandardPCA_elbow = self._fit_model(standardized_metadata=standardized_metadata_minus_celltype,standardized_count_data= self.standardized_count_data,standardPCA=True)
-            else: # if there is no metadata to regress out
-                self.StandardPCA_cell_embeddings, self.StandardPCA_gene_loadings, self.StandardPCA_eigenvalues, self.StandardPCA_BIC_cutoff, self.StandardPCA_elbow  = self._fit_model(standardized_metadata=False,standardized_count_data= self.standardized_count_data,standardPCA=True)
+                # remove celltype from covariate space
+                standardized_metadata_minus_celltype = self.standardized_metadata.drop(columns = self.standardized_metadata.filter(like="celltype", axis=1).columns )
+                # fit linear model (regress out covariates) and fit PCA -- covariates do not contain cell type
+                self.StandardPCA_cell_embeddings, self.StandardPCA_gene_loadings, self.StandardPCA_eigenvalues, self.StandardPCA_BIC_cutoff, self.StandardPCA_elbow = self._fit_model(standardized_metadata=standardized_metadata_minus_celltype,standardized_count_data= self.standardized_count_data,standardPCA=True)
+        else: # if there is no metadata to regress out
+            self.StandardPCA_cell_embeddings, self.StandardPCA_gene_loadings, self.StandardPCA_eigenvalues, self.StandardPCA_BIC_cutoff = self._fit_model(standardized_metadata=False,standardized_count_data= self.standardized_count_data,standardPCA=True)
 
 
     def Iter_PCA_fit(self):
-        if self.lowmem:
-            raise ValueError("Cannot perform Iterative PCA in lowmem mode.")
-        else: 
-            if self.metadata is not False:   
+        if self.metadata is not False:   
+            if all(col.startswith('celltype_') for col in self.metadata): # if only metadata provided that is celltype
+                print("Only celltype column provided in metadata. No covariates to regress out for Iterative PCA.")
+                pass
+
+            else:
+                # remove celltype from standardized covariate space
+                metadata_minus_celltype = self.standardized_metadata.drop(columns = self.standardized_metadata.filter(like="celltype", axis=1).columns )  
+            
+            # get dataframe with boolean indices for each cell type
+            self.dataframe_CT_indices = self.IterPCA_metadata.filter(like="celltype", axis=1).astype(bool)   
+            # get the name of the columns that indicate a cell type
+            celltype_colnames = self.dataframe_CT_indices.columns  
+            # create empty dictionaries to store results of iterative PCA per cell type
+            #self.IterPCA_residuals = {} # CAN REMOVE THIS IS USED FOR CHECKING
+            self.IterPCA_cell_embeddings = {}
+            self.IterPCA_gene_loadings = {}
+            self.IterPCA_eigenvalues = {}
+            self.IterPCA_BIC_cutoff = {}
+            self.IterPCA_elbow = {}
+            # iterate through each cell type and perform iterative PCA, storing results in dictionaries
+            for celltype_column in celltype_colnames:
+                # obtain cell type name, replace spaces with underscores
+                tmp_CT = celltype_column.replace("celltype_", "").replace(" ", "_")
                 if all(col.startswith('celltype_') for col in self.metadata): # if only metadata provided that is celltype
                     print("Only celltype column provided in metadata. No covariates to regress out for Iterative PCA.")
-                    pass
-
-                else:
-                    # remove celltype from standardized covariate space
-                    metadata_minus_celltype = self.standardized_metadata.drop(columns = self.standardized_metadata.filter(like="celltype", axis=1).columns )  
-                
-                # get dataframe with boolean indices for each cell type
-                self.dataframe_CT_indices = self.IterPCA_metadata.filter(like="celltype", axis=1).astype(bool)   
-                # get the name of the columns that indicate a cell type
-                celltype_colnames = self.dataframe_CT_indices.columns  
-                # create empty dictionaries to store results of iterative PCA per cell type
-                #self.IterPCA_residuals = {} # CAN REMOVE THIS IS USED FOR CHECKING
-                self.IterPCA_cell_embeddings = {}
-                self.IterPCA_gene_loadings = {}
-                self.IterPCA_eigenvalues = {}
-                self.IterPCA_BIC_cutoff = {}
-                self.IterPCA_elbow = {}
-                # iterate through each cell type and perform iterative PCA, storing results in dictionaries
-                for celltype_column in celltype_colnames:
-                    # obtain cell type name, replace spaces with underscores
-                    tmp_CT = celltype_column.replace("celltype_", "").replace(" ", "_")
-                    if all(col.startswith('celltype_') for col in self.metadata): # if only metadata provided that is celltype
-                        print("Only celltype column provided in metadata. No covariates to regress out for Iterative PCA.")
-                        tmp_result = self._mapping_IterPCA_subset_dataframes_to_PCA(metadata=False, CT_exp_column=celltype_column)
-                    else: 
-                        tmp_result = self._mapping_IterPCA_subset_dataframes_to_PCA(metadata_minus_celltype, celltype_column)
-                    # append results to appropriate dictionary
-                    self.IterPCA_cell_embeddings[tmp_CT] = tmp_result[0]
-                    self.IterPCA_gene_loadings[tmp_CT] = tmp_result[1]
-                    self.IterPCA_eigenvalues[tmp_CT] = tmp_result[2]
-                    self.IterPCA_BIC_cutoff[tmp_CT] = tmp_result[3]
-                    self.IterPCA_elbow[tmp_CT] = tmp_result[4]
-                    #self.IterPCA_residuals[tmp_CT]  = tmp_result[4] # CAN REMOVE USED FOR CHECKING
-            else:
-                raise ValueError("Cannot perform Iterative PCA. No celltype column specified in metadata")
+                    tmp_result = self._mapping_IterPCA_subset_dataframes_to_PCA(metadata=False, CT_exp_column=celltype_column)
+                else: 
+                    tmp_result = self._mapping_IterPCA_subset_dataframes_to_PCA(metadata_minus_celltype, celltype_column)
+                # append results to appropriate dictionary
+                self.IterPCA_cell_embeddings[tmp_CT] = tmp_result[0]
+                self.IterPCA_gene_loadings[tmp_CT] = tmp_result[1]
+                self.IterPCA_eigenvalues[tmp_CT] = tmp_result[2]
+                self.IterPCA_BIC_cutoff[tmp_CT] = tmp_result[3]
+                self.IterPCA_elbow[tmp_CT] = tmp_result[4]
+                #self.IterPCA_residuals[tmp_CT]  = tmp_result[4] # CAN REMOVE USED FOR CHECKING
+        else:
+            raise ValueError("Cannot perform Iterative PCA. No celltype column specified in metadata")
 
     def _plot_mean_variance_relationship(self, log_normed_data, label):
         # compute the mean of every gene/column of the matrix
@@ -938,7 +889,6 @@ def main():
         parser.add_argument('--vargenes_Stand_resid', type=parse_vargenes, default="all", help="Variable genes for standard residual PCA.")
         parser.add_argument('--BIC', action='store_true', default=True, help="Use BIC for model selection.")
         parser.add_argument('--no_BIC', action='store_false', dest='BIC', help="Do not use BIC for model selection.")
-        parser.add_argument('--lowmem', action='store_true', default=False, help="Use low memory mode (only run from command line).")
         parser.add_argument('--save_image_outputs', action='store_true', help="Save image outputs.")
         parser.add_argument('--path_to_directory', type=str, default="./", help="Path to output directory.")
         parser.add_argument('--basename', type=str, default=f'residPCA_run_{datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}', help="Basename for output files.")
@@ -965,7 +915,6 @@ def main():
             basename=init_args.basename,
             global_ct_cutoff=init_args.global_ct_cutoff,
             logged=init_args.logged,
-            lowmem=init_args.lowmem,
             sparse_PCA=init_args.sparse_PCA,
         )
         save_object(scExp, init_args.path_to_directory, init_args.basename, obj_file)
@@ -1068,29 +1017,6 @@ if __name__=="__main__":
 #     --basename test_run \
 #     --global_ct_cutoff 0.2
 
-#LOWMEM:
-# python low_mem_residPCA.py Initialize \
-#     --count_matrix_path /Users/shayecarver/residPCA/examples/example_data.h5ad \
-#     --vars_to_regress Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
-#     --variable_genes_flavor seurat \
-#     --object_columns Batch,celltype \
-#     --n_PCs 150 \
-#     --random_seed 42 \
-#     --vargenes_IterPCA 3000 \
-#     --vargenes_Stand_resid 3000 \
-#     --BIC \
-#     --save_image_outputs \
-#     --basename test_run_LOWMEM \
-#     --lowmem \
-#     --global_ct_cutoff 0.2
-
-# python low_mem_residPCA.py Normalize --basename test_run_LOWMEM --path_to_directory ./
-
-# python low_mem_residPCA.py Standardize --basename test_run_LOWMEM --path_to_directory ./
-
-# python low_mem_residPCA.py residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
-#OR
-# python low_mem_residPCA.py StandardPCA_fit --basename test_run_LOWMEM --path_to_directory ./
 #==============
 
 # python residPCA.py Initialize \
@@ -1111,9 +1037,9 @@ if __name__=="__main__":
 
 # python residPCA.py Standardize --basename test_run --path_to_directory ./
 
-# python residPCA.py residPCA_fit --basename test_run --path_to_directory ./
-
 # python residPCA.py StandardPCA_fit --basename test_run --path_to_directory ./
+
+# python residPCA.py residPCA_fit --basename test_run --path_to_directory ./
 
 # python residPCA.py Iter_PCA_fit --basename test_run --path_to_directory ./
 
