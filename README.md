@@ -185,10 +185,9 @@ Path to the output directory. Default is "./".
 Basename for output files. Default is residPCA_run_<current_datetime>.
 
 **Outputs in command line:**
-
-# embeddings/loadings output at BIC cuttoff or n_PCs specified
   -`StandardPCA_gene_loadings.csv`
   -`StandardPCA_cell_embeddings.csv`
+Note: embeddings/loadings output at BIC cuttoff or n_PCs specified
 
 **Outputs in Python object:**
   - ```scExp.StandardPCA_cell_embeddings``` - cell embeddings outputted by Standard PCA
@@ -216,10 +215,9 @@ Path to the output directory. Default is "./".
 Basename for output files. Default is residPCA_run_<current_datetime>.
 
 **Outputs in command line:**
-
-# embeddings/loadings output at BIC cuttoff or n_PCs specified
   -`ResidPCA_gene_loadings.csv`
   -`ResidPCA_cell_embeddings.csv`
+  Note: embeddings/loadings output at BIC cuttoff or n_PCs specified
 
 **Outputs in Python object:**
   - ```scExp.CondPCA_cell_embeddings``` - cell embeddings outputted by Conditional PCA
