@@ -392,7 +392,7 @@ scExp.Standardize()
 
 Once you have instantiated your class and Normalized and Standardized you must **either** run ResidPCA or StandardPCA.
 
-**For ResidPCA**
+**For ResidPCA:**
 
 Command line example  command:
 ```
@@ -405,7 +405,7 @@ Python environment example command:
 scExp.residPCA_fit()
 ```
 
-**StandardPCA**
+**StandardPCA:**
 
 Command line example  command:
 ```
