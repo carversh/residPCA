@@ -278,8 +278,56 @@ Note: This method labels each state identified in StandardPCA and CondPCA as a g
  If ```save_image_outputs == True```:
    - example
    
-### Step 7 - output BED files for heritability analysis
+
+### Step 9 - Output Loadings from Each Method as BED Files for LDSC-SEG (Heritability Analysis)
+
+The loadings from each dimensionality reduction method can be extracted and saved as BED files. These BED files annotate the top (most positive) and bottom (most negative) gene loadings, which can then be used as input for **LDSC-SEG** (partitioned heritability analysis).
+
+### Purpose
+The exported BED files are used to annotate genomic regions corresponding to the top and bottom gene loadings, enabling functional genomic analyses and heritability partitioning.
+
+Command line example  command:
+```
+ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Resid # output bed files for loadings from ResidPCA
+
+ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Standard # output bed files for loadings from
+
+ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Iter # output bed files for loadings from IterPCA
+```
+
+Python environment example command:
+```
+scExp.heritability_bed_output("~/residPCA/gencode.v39.basic.annotation.names.bed", 200, "Resid") # output bed files for loadings from ResidPCA
+
+scExp.heritability_bed_output("~/residPCA/gencode.v39.basic.annotation.names.bed", 200, "Standard") # output bed files for loadings from StandardPCA
+
+scExp.heritability_bed_output("~/residPCA/gencode.v39.basic.annotation.names.bed", 200, "Iter") # output bed files for loadings from IterPCA
+```
+
+**Input Data**
+  - ```ref_annotations_file``` - This is the reference file containing genomic annotations, such as gene names and chromosomal positions.
+Example file: ```[gencode.v39.basic.annotation.names.bed](https://github.com/carversh/residPCA/blob/main/gencode.v39.basic.annotation.names.bed)``` (provided in the repository).
+  It contains:
+    Gene names.
+    Chromosomal start and end positions.
+    Additional metadata for annotations.
+
+**Parameters:**
+- `--ref_annotations_file` (str, required):
+Path to the file containing genomic annotations. 
+`--num_genes` (str, optional):
+Specifies the number of genes to include in the annotation. Default: 200.
+- `--method` (str, optional):
+Specifies the dimensionality reduction method for which BED files should be generated. Options include:
+    -`Resid` (for ResidPCA)
+    -`Standard` (for Standard PCA)
+    -`Iter` (for Iterative PCA)
+- `--window` (str, optional):
+Window size (in base pairs) for annotations upstream and downstream of the gene. Default: 100,000 (100 kb).
+
 
 # Image Outputs
 
 When initializing your experiment, if you set ```save_image_outputs = True```, a directory will be created that will contain all image based outputs from the method. Different commands will yield different image outputs depending on the task of the command. All relevant images and data will be saved to a directory called ```basename``` with the initial appended path ```path_to_directory```.
+
+# Low Memory Setting
