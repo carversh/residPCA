@@ -1,9 +1,6 @@
-# pyproject.toml
-
 [build-system]
-requires = ["setuptools>=61.0.0", "wheel"]
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
 build-backend = "setuptools.build_meta"
-
-[project]
-name = "ResidPCA"
-version = "1.0.0"
