@@ -2,8 +2,9 @@
 
 source activate ResidPCA_Toolkit
 
-ResidPCA Initialize \
-     --count_matrix_path ./examples/example_data.h5ad \
+# run from inside example folder of the github repo
+residPCA Initialize \
+     --count_matrix_path example_data.h5ad \
      --vars_to_regress Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
      --object_columns Batch,celltype,Sex \
      --variable_genes_flavor seurat \
@@ -15,21 +16,28 @@ ResidPCA Initialize \
      --path_to_directory ./ \
     --basename test_run
 
+echo initialized
 
-ResidPCA Normalize --basename test_run --path_to_directory ./
+residPCA Normalize --basename test_run --path_to_directory ./
+echo normalized 
 
-ResidPCA Standardize --basename test_run --path_to_directory ./
+residPCA Standardize --basename test_run --path_to_directory ./
+echo standardized 
 
-ResidPCA StandardPCA_fit --basename test_run --path_to_directory ./
+residPCA StandardPCA_fit --basename test_run --path_to_directory ./
+echo performed standard PCA
 
-ResidPCA residPCA_fit --basename test_run --path_to_directory ./
+residPCA residPCA_fit --basename test_run --path_to_directory ./
+echo performed residPCA
 
-ResidPCA Iter_PCA_fit --basename test_run --path_to_directory ./
+residPCA Iter_PCA_fit --basename test_run --path_to_directory ./
+echo performed Iterative PCA
+residPCA ID_Global_CellType_States --basename test_run --path_to_directory ./
 
-ResidPCA ID_Global_CellType_States --basename test_run --path_to_directory ./
+residPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Resid
+echo outputtted heritability bed files from residPCA
 
-ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Resid
+residPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Standard
+echo outputtted heritability bed files from  Standard PCA
 
-ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Standard
-
-ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Iter
+residPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Iter
