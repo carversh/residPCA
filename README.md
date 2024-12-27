@@ -25,10 +25,10 @@ source activate ResidPCA_Toolkit
  
 This conda environment now contains all the necessary packages to run the Toolkit.
 
-Third, install the ResidPCA Toolkit via [pip](https://pypi.org/):
+Third, install the ResidPCA Toolkit via [pip](https://pypi.org/project/residPCA):
 
 ```
-pip install ResidPCA
+pip install residPCA
 ```
 
 Note: when running the ResidPCA Toolkit, the respective conda environment must always be activated using the command:
