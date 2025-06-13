@@ -332,9 +332,6 @@ When initializing your experiment, if you set ```save_image_outputs = True```, a
 
 # Low Memory Setting
 
-
-Here’s an improved version of your write-up, providing more clarity, structure, and a professional tone:
-
 The low-memory mode is designed to reduce memory usage by limiting the number of intermediate outputs saved during computation. As a result, it can only run one method at a time. For instance, low-memory mode can execute either ResidPCA or Standard PCA in a single instance, but it cannot handle both simultaneously.
 
 Currently, low-memory support for Iterative PCA is still under development.
