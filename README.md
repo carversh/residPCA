@@ -420,7 +420,15 @@ scExp.StandardPCA_fit()
 
 # Simulation Script for Cell State Inference
 
-This `Simulation` folder in this repository contains code for running simulations to generate single-cell expression matrices with states spanning **all cell types** or **within a single cell type**.  
+This `Simulation` folder in this repository contains code for running simulations to generate single-cell expression matrices with states spanning **all cell types** or **within a single cell type**. 
+
+## Simulation Regimes
+
+| Simulation | # Cells | # Cell Types | % Genes in State | % Cells in State | Noise Model              | Parameter Source                        |
+|------------|---------|--------------|------------------|------------------|--------------------------|----------------------------------------|
+| 7 CTs      | 20,000  | 7            | 0.15, 0.30, 0.50, 0.70 | 0.15, 0.30, 0.50, 0.70 | Gamma-Poisson (Negative Binomial) | Fitted to 7 cell types from Morabito et al. |
+| 100 CTs    | 40,000  | 100          | 0.15, 0.30, 0.50, 0.70 | 0.15, 0.30, 0.50, 0.70 | Gamma-Poisson (Negative Binomial) | 7 Morabito cell types + 93 synthetic (sampled from min–max of fitted params) |
+
 
 ## Files Overview
 
