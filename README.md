@@ -169,7 +169,7 @@ Basename for output files. Default is residPCA_run_<current_datetime>.
 
 Command line example  command:
 ```
-ResidPCA StandardPCA_fit 
+residPCA StandardPCA_fit 
 ```
 
 Python environment example command:
@@ -199,14 +199,14 @@ Note: embeddings/loadings output at BIC cuttoff or n_PCs specified
 
 Command line example  command:
 ```
-ResidPCA ResidPCA_fit 
+residPCA residPCA_fit 
 ```
 
 Python environment example command:
 ```
-scExp.ResidPCA_fit()
+scExp.residPCA_fit()
 ```
-Returns the CondPCA output in the form of dataframes. 
+Returns the ResidPCA output in the form of dataframes. 
 
 **Parameters:**
 - `--path_to_directory` (str, optional):
@@ -215,21 +215,21 @@ Path to the output directory. Default is "./".
 Basename for output files. Default is residPCA_run_<current_datetime>.
 
 **Outputs in command line:**
-  -`ResidPCA_gene_loadings.csv`
-  -`ResidPCA_cell_embeddings.csv`
+  -`residPCA_gene_loadings.csv`
+  -`residPCA_cell_embeddings.csv`
   Note: embeddings/loadings output at BIC cuttoff or n_PCs specified
 
 **Outputs in Python object:**
-  - ```scExp.CondPCA_cell_embeddings``` - cell embeddings outputted by Conditional PCA
-  - ```scExp.CondPCA_gene_loadings``` - gene loadings or eigenvectors outputted by Conditional PCA
-  - ```scExp.CondPCA_eigenvalues``` - eigenvalues outputted by Conditional PCA
-  - ```scExp.CondPCA_BIC_cutoff``` - PC cutoff that specifies the maximum state that is significant. For significant states, subset the cell embeddings and gene loadings from PC1 to the PC specified in this variable
+  - ```scExp.residPCA_cell_embeddings``` - cell embeddings outputted by Conditional PCA
+  - ```scExp.residPCA_gene_loadings``` - gene loadings or eigenvectors outputted by Conditional PCA
+  - ```scExp.residPCA_eigenvalues``` - eigenvalues outputted by Conditional PCA
+  - ```scExp.residPCA_BIC_cutoff``` - PC cutoff that specifies the maximum state that is significant. For significant states, subset the cell embeddings and gene loadings from PC1 to the PC specified in this variable
 
 ### Step 6 - perform Iterative PCA (IterPCA)
 
 Command line example  command:
 ```
-ResidPCA Iter_PCA_fit 
+residPCA Iter_PCA_fit 
 ```
 
 Python environment example command:
@@ -259,7 +259,7 @@ Warning:
 
 Command line example  command:
 ```
-ResidPCA ID_Global_CellType_States 
+residPCA ID_Global_CellType_States 
 ```
 
 Python environment example command:
@@ -267,13 +267,13 @@ Python environment example command:
 scExp.ID_Global_CellType_States()
 ```
 
-Returns a dataframe for StandardPCA based states and CondPCA based states. Returns the maximum squared correlation between states identified in IterPCA and StandardPCA/CondPCA. Annotates each state and whether it is a global or cell type specific state as well as the cell types that are in that state.
+Returns a dataframe for StandardPCA based states and ResidPCA based states. Returns the maximum squared correlation between states identified in IterPCA and StandardPCA/ResidPCA. Annotates each state and whether it is a global or cell type specific state as well as the cell types that are in that state.
 
-Note: This method labels each state identified in StandardPCA and CondPCA as a global state, or a state spanning multiple cell types, or cell type specific states, or a state within a specific cell type. Additionally, this method labels which states belong to which cell types. To perform this method, ```scExp.Iter_PCA_fit()``` must be run beforehand and at least ```scExp.StandardPCA_fit()``` or ```scExp.CondPCA_fit()```  must be run. If only ```scExp.CondPCA_fit()``` is run, only the states belonoging to CondPCA will be evaluated, if only ```scExp.StandardPCA_fit()``` is run, only the states belonging to StandardPCA will be evaluated, if both are run, both will be evaluated.
+Note: This method labels each state identified in StandardPCA and ResidPCA as a global state, or a state spanning multiple cell types, or cell type specific states, or a state within a specific cell type. Additionally, this method labels which states belong to which cell types. To perform this method, ```scExp.Iter_PCA_fit()``` must be run beforehand and at least ```scExp.StandardPCA_fit()``` or ```scExp.residPCA_fit()```  must be run. If only ```scExp.residPCA_fit()``` is run, only the states belonoging to ResidPCA will be evaluated, if only ```scExp.StandardPCA_fit()``` is run, only the states belonging to StandardPCA will be evaluated, if both are run, both will be evaluated.
 
 **Outputs **
  -```scExp.StandardPCA_IterPCA_squared_correlations``` - dataframe containing each state from StandardPCA and a row and the maximum correlation with a certain run of IterPCA (columns are labeled by IterPCA run on that given cell type). Two additional columns are included called "CT_involved", which tells you which cell types are involved in the state, and "Global_vs_CT", which tell you whether the state is global or cell type specific.
- - ```scExp.CondPCA_IterPCA_squared_correlations``` - dataframe containing each state from CondPCA and a row and the maximum correlation with a certain run of IterPCA (columns are labeled by IterPCA run on that given cell type). Two additional columns are included called "CT_involved", which tells you which cell types are involved in the state, and "Global_vs_CT", which tell you whether the state is global or cell type specific.
+ - ```scExp.residPCA_IterPCA_squared_correlations``` - dataframe containing each state from ResidPCA and a row and the maximum correlation with a certain run of IterPCA (columns are labeled by IterPCA run on that given cell type). Two additional columns are included called "CT_involved", which tells you which cell types are involved in the state, and "Global_vs_CT", which tell you whether the state is global or cell type specific.
 
  If ```save_image_outputs == True```:
    - example
@@ -288,11 +288,11 @@ The exported BED files are used to annotate genomic regions corresponding to the
 
 Command line example  command:
 ```
-ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Resid # output bed files for loadings from ResidPCA
+residPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Resid # output bed files for loadings from ResidPCA
 
-ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Standard # output bed files for loadings from
+residPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Standard # output bed files for loadings from
 
-ResidPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Iter # output bed files for loadings from IterPCA
+residPCA heritability_bed_output --basename test_run --path_to_directory ./ --ref_annotations_file ~/residPCA/gencode.v39.basic.annotation.names.bed --method Iter # output bed files for loadings from IterPCA
 ```
 
 Python environment example command:
@@ -345,11 +345,11 @@ In this mode, several intermediate matrices are not stored in memory to conserve
 
 Despite these limitations, the key outputs—cell embeddings and gene loadings—are still saved and remain accessible for downstream analyses.
 
-If you want to run ResidPCA, instantiate your class with the ```lowmem=True``` and either run ```ResidPCA_fit()``` or ```StandardPCA_fit()```.
+If you want to run ResidPCA, instantiate your class with the ```lowmem=True``` and either run ```residPCA_fit()``` or ```StandardPCA_fit()```.
 
 Command line example  command:
 ```
-ResidPCA Initialize \
+residPCA Initialize \
      --count_matrix_path ./examples/example_data.h5ad \
      --vars_to_regress Batch,celltype,total_counts,pct_counts_mt,Age,Sex \
      --object_columns Batch,celltype,Sex \
@@ -363,9 +363,9 @@ ResidPCA Initialize \
      --path_to_directory ./ \
      --lowmem
      
-ResidPCA Normalize --basename test_run_LOWMEM --path_to_directory ./
-ResidPCA Standardize --basename test_run --path_to_directory ./
-ResidPCA residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
+residPCA Normalize --basename test_run_LOWMEM --path_to_directory ./
+residPCA Standardize --basename test_run --path_to_directory ./
+residPCA residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
 ```
 
 Python environment example command:
@@ -393,7 +393,7 @@ Once you have instantiated your class and Normalized and Standardized you must *
 
 Command line example  command:
 ```
-ResidPCA residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
+residPCA residPCA_fit --basename test_run_LOWMEM --path_to_directory ./
 ```
 
 Python environment example command:
@@ -417,5 +417,57 @@ scExp.StandardPCA_fit()
 ```
 
 ** These are the same steps as the step by step directions, but in the lowmem setting, the package can only be run up until this point.
+
+# Simulation Script for Cell State Inference
+
+This repository contains code for running simulations to generate single-cell expression matrices with states spanning **all cell types** or **within a single cell type**.  
+
+## Files Overview
+
+### `Simulation.R`
+Generates simulated single-cell RNA-seq data under a **Gamma-Poisson model** to evaluate dimensionality reduction and matrix factorization methods (`PCA`, `ResidPCA`, `NMF`, `cNMF`, `UMAP`, and custom approaches).  
+
+**Main features:**
+- Loads cell type proportions and overdispersion parameters (for either **7 Morabito cell types** or a synthetic **100-cell-type** setting).  
+- Simulates gene expression counts with configurable states (within one cell type, across a subset, or across all types).  
+- Samples counts using a Gamma-Poisson distribution.  
+- Constructs Seurat objects and computes embeddings using the chosen method.  
+- Outputs embeddings, metadata, and performance metrics (e.g., correlations with simulated states).  
+
+**Inputs:** Command-line arguments for random seed, method, state type, dimensionality, total cells, percent of genes/cells in state, and dataset flag (7 vs. 100 cell types).  
+
+---
+
+### `my_method.py`  
+**Evaluation Script for ResidPCA**  
+
+Analyzes simulated single-cell RNA-seq datasets and evaluates **Residual PCA (ResidPCA)** against standard PCA.  
+
+**Main features:**
+- Parses command-line arguments (seed, method, state type, dimension, number of cells, percent genes/cells in state, dataset flag).  
+- Loads simulation outputs (cell metadata, state assignments, continuum values, and count matrices).  
+- Runs `ResidPCA` and standard PCA on the data.  
+- Computes performance metrics including:
+  - Adjusted R²  
+  - Maximum correlation with simulated states  
+  - Subset correlations  
+- Appends results to a shared output file (`output_my_method.txt`).  
+- Cleans up temporary intermediate files generated during simulation.  
+
+---
+
+### `my_method_w_IterPCA.py`  
+Same as `my_method.py` but also evaluates **Iterative PCA (IterPCA)** in addition to ResidPCA and standard PCA.  
+
+---
+
+### `my_method.sh`  
+Cluster job submission script that automates running the single-cell simulation and evaluation pipeline on an **LSF cluster** using `bsub`.  
+
+---
+
+### `my_method.par` and `simulation.par`  
+Parameter files specifying the configurations used to run the simulations in the manuscript.  
+
 
 
