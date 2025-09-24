@@ -420,7 +420,7 @@ scExp.StandardPCA_fit()
 
 # Simulation Script for Cell State Inference
 
-This Simulation folder in this repository contains code for running simulations to generate single-cell expression matrices with states spanning **all cell types** or **within a single cell type**.  
+This `Simulation` folder in this repository contains code for running simulations to generate single-cell expression matrices with states spanning **all cell types** or **within a single cell type**.  
 
 ## Files Overview
 
