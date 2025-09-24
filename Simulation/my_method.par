@@ -1,0 +1,640 @@
+1 my_method within_one_ct 10 20000 0.15 0.15
+2 my_method within_one_ct 10 20000 0.15 0.15
+3 my_method within_one_ct 10 20000 0.15 0.15
+4 my_method within_one_ct 10 20000 0.15 0.15
+5 my_method within_one_ct 10 20000 0.15 0.15
+6 my_method within_one_ct 10 20000 0.15 0.15
+7 my_method within_one_ct 10 20000 0.15 0.15
+8 my_method within_one_ct 10 20000 0.15 0.15
+9 my_method within_one_ct 10 20000 0.15 0.15
+10 my_method within_one_ct 10 20000 0.15 0.15
+1 my_method within_one_ct 10 20000 0.15 0.3
+2 my_method within_one_ct 10 20000 0.15 0.3
+3 my_method within_one_ct 10 20000 0.15 0.3
+4 my_method within_one_ct 10 20000 0.15 0.3
+5 my_method within_one_ct 10 20000 0.15 0.3
+6 my_method within_one_ct 10 20000 0.15 0.3
+7 my_method within_one_ct 10 20000 0.15 0.3
+8 my_method within_one_ct 10 20000 0.15 0.3
+9 my_method within_one_ct 10 20000 0.15 0.3
+10 my_method within_one_ct 10 20000 0.15 0.3
+1 my_method within_one_ct 10 20000 0.15 0.5
+2 my_method within_one_ct 10 20000 0.15 0.5
+3 my_method within_one_ct 10 20000 0.15 0.5
+4 my_method within_one_ct 10 20000 0.15 0.5
+5 my_method within_one_ct 10 20000 0.15 0.5
+6 my_method within_one_ct 10 20000 0.15 0.5
+7 my_method within_one_ct 10 20000 0.15 0.5
+8 my_method within_one_ct 10 20000 0.15 0.5
+9 my_method within_one_ct 10 20000 0.15 0.5
+10 my_method within_one_ct 10 20000 0.15 0.5
+1 my_method within_one_ct 10 20000 0.15 0.7
+2 my_method within_one_ct 10 20000 0.15 0.7
+3 my_method within_one_ct 10 20000 0.15 0.7
+4 my_method within_one_ct 10 20000 0.15 0.7
+5 my_method within_one_ct 10 20000 0.15 0.7
+6 my_method within_one_ct 10 20000 0.15 0.7
+7 my_method within_one_ct 10 20000 0.15 0.7
+8 my_method within_one_ct 10 20000 0.15 0.7
+9 my_method within_one_ct 10 20000 0.15 0.7
+10 my_method within_one_ct 10 20000 0.15 0.7
+1 my_method within_one_ct 10 20000 0.3 0.15
+2 my_method within_one_ct 10 20000 0.3 0.15
+3 my_method within_one_ct 10 20000 0.3 0.15
+4 my_method within_one_ct 10 20000 0.3 0.15
+5 my_method within_one_ct 10 20000 0.3 0.15
+6 my_method within_one_ct 10 20000 0.3 0.15
+7 my_method within_one_ct 10 20000 0.3 0.15
+8 my_method within_one_ct 10 20000 0.3 0.15
+9 my_method within_one_ct 10 20000 0.3 0.15
+10 my_method within_one_ct 10 20000 0.3 0.15
+1 my_method within_one_ct 10 20000 0.3 0.3
+2 my_method within_one_ct 10 20000 0.3 0.3
+3 my_method within_one_ct 10 20000 0.3 0.3
+4 my_method within_one_ct 10 20000 0.3 0.3
+5 my_method within_one_ct 10 20000 0.3 0.3
+6 my_method within_one_ct 10 20000 0.3 0.3
+7 my_method within_one_ct 10 20000 0.3 0.3
+8 my_method within_one_ct 10 20000 0.3 0.3
+9 my_method within_one_ct 10 20000 0.3 0.3
+10 my_method within_one_ct 10 20000 0.3 0.3
+1 my_method within_one_ct 10 20000 0.3 0.5
+2 my_method within_one_ct 10 20000 0.3 0.5
+3 my_method within_one_ct 10 20000 0.3 0.5
+4 my_method within_one_ct 10 20000 0.3 0.5
+5 my_method within_one_ct 10 20000 0.3 0.5
+6 my_method within_one_ct 10 20000 0.3 0.5
+7 my_method within_one_ct 10 20000 0.3 0.5
+8 my_method within_one_ct 10 20000 0.3 0.5
+9 my_method within_one_ct 10 20000 0.3 0.5
+10 my_method within_one_ct 10 20000 0.3 0.5
+1 my_method within_one_ct 10 20000 0.3 0.7
+2 my_method within_one_ct 10 20000 0.3 0.7
+3 my_method within_one_ct 10 20000 0.3 0.7
+4 my_method within_one_ct 10 20000 0.3 0.7
+5 my_method within_one_ct 10 20000 0.3 0.7
+6 my_method within_one_ct 10 20000 0.3 0.7
+7 my_method within_one_ct 10 20000 0.3 0.7
+8 my_method within_one_ct 10 20000 0.3 0.7
+9 my_method within_one_ct 10 20000 0.3 0.7
+10 my_method within_one_ct 10 20000 0.3 0.7
+1 my_method within_one_ct 10 20000 0.5 0.15
+2 my_method within_one_ct 10 20000 0.5 0.15
+3 my_method within_one_ct 10 20000 0.5 0.15
+4 my_method within_one_ct 10 20000 0.5 0.15
+5 my_method within_one_ct 10 20000 0.5 0.15
+6 my_method within_one_ct 10 20000 0.5 0.15
+7 my_method within_one_ct 10 20000 0.5 0.15
+8 my_method within_one_ct 10 20000 0.5 0.15
+9 my_method within_one_ct 10 20000 0.5 0.15
+10 my_method within_one_ct 10 20000 0.5 0.15
+1 my_method within_one_ct 10 20000 0.5 0.3
+2 my_method within_one_ct 10 20000 0.5 0.3
+3 my_method within_one_ct 10 20000 0.5 0.3
+4 my_method within_one_ct 10 20000 0.5 0.3
+5 my_method within_one_ct 10 20000 0.5 0.3
+6 my_method within_one_ct 10 20000 0.5 0.3
+7 my_method within_one_ct 10 20000 0.5 0.3
+8 my_method within_one_ct 10 20000 0.5 0.3
+9 my_method within_one_ct 10 20000 0.5 0.3
+10 my_method within_one_ct 10 20000 0.5 0.3
+1 my_method within_one_ct 10 20000 0.5 0.5
+2 my_method within_one_ct 10 20000 0.5 0.5
+3 my_method within_one_ct 10 20000 0.5 0.5
+4 my_method within_one_ct 10 20000 0.5 0.5
+5 my_method within_one_ct 10 20000 0.5 0.5
+6 my_method within_one_ct 10 20000 0.5 0.5
+7 my_method within_one_ct 10 20000 0.5 0.5
+8 my_method within_one_ct 10 20000 0.5 0.5
+9 my_method within_one_ct 10 20000 0.5 0.5
+10 my_method within_one_ct 10 20000 0.5 0.5
+1 my_method within_one_ct 10 20000 0.5 0.7
+2 my_method within_one_ct 10 20000 0.5 0.7
+3 my_method within_one_ct 10 20000 0.5 0.7
+4 my_method within_one_ct 10 20000 0.5 0.7
+5 my_method within_one_ct 10 20000 0.5 0.7
+6 my_method within_one_ct 10 20000 0.5 0.7
+7 my_method within_one_ct 10 20000 0.5 0.7
+8 my_method within_one_ct 10 20000 0.5 0.7
+9 my_method within_one_ct 10 20000 0.5 0.7
+10 my_method within_one_ct 10 20000 0.5 0.7
+1 my_method within_one_ct 10 20000 0.7 0.15
+2 my_method within_one_ct 10 20000 0.7 0.15
+3 my_method within_one_ct 10 20000 0.7 0.15
+4 my_method within_one_ct 10 20000 0.7 0.15
+5 my_method within_one_ct 10 20000 0.7 0.15
+6 my_method within_one_ct 10 20000 0.7 0.15
+7 my_method within_one_ct 10 20000 0.7 0.15
+8 my_method within_one_ct 10 20000 0.7 0.15
+9 my_method within_one_ct 10 20000 0.7 0.15
+10 my_method within_one_ct 10 20000 0.7 0.15
+1 my_method within_one_ct 10 20000 0.7 0.3
+2 my_method within_one_ct 10 20000 0.7 0.3
+3 my_method within_one_ct 10 20000 0.7 0.3
+4 my_method within_one_ct 10 20000 0.7 0.3
+5 my_method within_one_ct 10 20000 0.7 0.3
+6 my_method within_one_ct 10 20000 0.7 0.3
+7 my_method within_one_ct 10 20000 0.7 0.3
+8 my_method within_one_ct 10 20000 0.7 0.3
+9 my_method within_one_ct 10 20000 0.7 0.3
+10 my_method within_one_ct 10 20000 0.7 0.3
+1 my_method within_one_ct 10 20000 0.7 0.5
+2 my_method within_one_ct 10 20000 0.7 0.5
+3 my_method within_one_ct 10 20000 0.7 0.5
+4 my_method within_one_ct 10 20000 0.7 0.5
+5 my_method within_one_ct 10 20000 0.7 0.5
+6 my_method within_one_ct 10 20000 0.7 0.5
+7 my_method within_one_ct 10 20000 0.7 0.5
+8 my_method within_one_ct 10 20000 0.7 0.5
+9 my_method within_one_ct 10 20000 0.7 0.5
+10 my_method within_one_ct 10 20000 0.7 0.5
+1 my_method within_one_ct 10 20000 0.7 0.7
+2 my_method within_one_ct 10 20000 0.7 0.7
+3 my_method within_one_ct 10 20000 0.7 0.7
+4 my_method within_one_ct 10 20000 0.7 0.7
+5 my_method within_one_ct 10 20000 0.7 0.7
+6 my_method within_one_ct 10 20000 0.7 0.7
+7 my_method within_one_ct 10 20000 0.7 0.7
+8 my_method within_one_ct 10 20000 0.7 0.7
+9 my_method within_one_ct 10 20000 0.7 0.7
+10 my_method within_one_ct 10 20000 0.7 0.7
+1 my_method across_cts 10 20000 0.15 0.15
+2 my_method across_cts 10 20000 0.15 0.15
+3 my_method across_cts 10 20000 0.15 0.15
+4 my_method across_cts 10 20000 0.15 0.15
+5 my_method across_cts 10 20000 0.15 0.15
+6 my_method across_cts 10 20000 0.15 0.15
+7 my_method across_cts 10 20000 0.15 0.15
+8 my_method across_cts 10 20000 0.15 0.15
+9 my_method across_cts 10 20000 0.15 0.15
+10 my_method across_cts 10 20000 0.15 0.15
+1 my_method across_cts 10 20000 0.15 0.3
+2 my_method across_cts 10 20000 0.15 0.3
+3 my_method across_cts 10 20000 0.15 0.3
+4 my_method across_cts 10 20000 0.15 0.3
+5 my_method across_cts 10 20000 0.15 0.3
+6 my_method across_cts 10 20000 0.15 0.3
+7 my_method across_cts 10 20000 0.15 0.3
+8 my_method across_cts 10 20000 0.15 0.3
+9 my_method across_cts 10 20000 0.15 0.3
+10 my_method across_cts 10 20000 0.15 0.3
+1 my_method across_cts 10 20000 0.15 0.5
+2 my_method across_cts 10 20000 0.15 0.5
+3 my_method across_cts 10 20000 0.15 0.5
+4 my_method across_cts 10 20000 0.15 0.5
+5 my_method across_cts 10 20000 0.15 0.5
+6 my_method across_cts 10 20000 0.15 0.5
+7 my_method across_cts 10 20000 0.15 0.5
+8 my_method across_cts 10 20000 0.15 0.5
+9 my_method across_cts 10 20000 0.15 0.5
+10 my_method across_cts 10 20000 0.15 0.5
+1 my_method across_cts 10 20000 0.15 0.7
+2 my_method across_cts 10 20000 0.15 0.7
+3 my_method across_cts 10 20000 0.15 0.7
+4 my_method across_cts 10 20000 0.15 0.7
+5 my_method across_cts 10 20000 0.15 0.7
+6 my_method across_cts 10 20000 0.15 0.7
+7 my_method across_cts 10 20000 0.15 0.7
+8 my_method across_cts 10 20000 0.15 0.7
+9 my_method across_cts 10 20000 0.15 0.7
+10 my_method across_cts 10 20000 0.15 0.7
+1 my_method across_cts 10 20000 0.3 0.15
+2 my_method across_cts 10 20000 0.3 0.15
+3 my_method across_cts 10 20000 0.3 0.15
+4 my_method across_cts 10 20000 0.3 0.15
+5 my_method across_cts 10 20000 0.3 0.15
+6 my_method across_cts 10 20000 0.3 0.15
+7 my_method across_cts 10 20000 0.3 0.15
+8 my_method across_cts 10 20000 0.3 0.15
+9 my_method across_cts 10 20000 0.3 0.15
+10 my_method across_cts 10 20000 0.3 0.15
+1 my_method across_cts 10 20000 0.3 0.3
+2 my_method across_cts 10 20000 0.3 0.3
+3 my_method across_cts 10 20000 0.3 0.3
+4 my_method across_cts 10 20000 0.3 0.3
+5 my_method across_cts 10 20000 0.3 0.3
+6 my_method across_cts 10 20000 0.3 0.3
+7 my_method across_cts 10 20000 0.3 0.3
+8 my_method across_cts 10 20000 0.3 0.3
+9 my_method across_cts 10 20000 0.3 0.3
+10 my_method across_cts 10 20000 0.3 0.3
+1 my_method across_cts 10 20000 0.3 0.5
+2 my_method across_cts 10 20000 0.3 0.5
+3 my_method across_cts 10 20000 0.3 0.5
+4 my_method across_cts 10 20000 0.3 0.5
+5 my_method across_cts 10 20000 0.3 0.5
+6 my_method across_cts 10 20000 0.3 0.5
+7 my_method across_cts 10 20000 0.3 0.5
+8 my_method across_cts 10 20000 0.3 0.5
+9 my_method across_cts 10 20000 0.3 0.5
+10 my_method across_cts 10 20000 0.3 0.5
+1 my_method across_cts 10 20000 0.3 0.7
+2 my_method across_cts 10 20000 0.3 0.7
+3 my_method across_cts 10 20000 0.3 0.7
+4 my_method across_cts 10 20000 0.3 0.7
+5 my_method across_cts 10 20000 0.3 0.7
+6 my_method across_cts 10 20000 0.3 0.7
+7 my_method across_cts 10 20000 0.3 0.7
+8 my_method across_cts 10 20000 0.3 0.7
+9 my_method across_cts 10 20000 0.3 0.7
+10 my_method across_cts 10 20000 0.3 0.7
+1 my_method across_cts 10 20000 0.5 0.15
+2 my_method across_cts 10 20000 0.5 0.15
+3 my_method across_cts 10 20000 0.5 0.15
+4 my_method across_cts 10 20000 0.5 0.15
+5 my_method across_cts 10 20000 0.5 0.15
+6 my_method across_cts 10 20000 0.5 0.15
+7 my_method across_cts 10 20000 0.5 0.15
+8 my_method across_cts 10 20000 0.5 0.15
+9 my_method across_cts 10 20000 0.5 0.15
+10 my_method across_cts 10 20000 0.5 0.15
+1 my_method across_cts 10 20000 0.5 0.3
+2 my_method across_cts 10 20000 0.5 0.3
+3 my_method across_cts 10 20000 0.5 0.3
+4 my_method across_cts 10 20000 0.5 0.3
+5 my_method across_cts 10 20000 0.5 0.3
+6 my_method across_cts 10 20000 0.5 0.3
+7 my_method across_cts 10 20000 0.5 0.3
+8 my_method across_cts 10 20000 0.5 0.3
+9 my_method across_cts 10 20000 0.5 0.3
+10 my_method across_cts 10 20000 0.5 0.3
+1 my_method across_cts 10 20000 0.5 0.5
+2 my_method across_cts 10 20000 0.5 0.5
+3 my_method across_cts 10 20000 0.5 0.5
+4 my_method across_cts 10 20000 0.5 0.5
+5 my_method across_cts 10 20000 0.5 0.5
+6 my_method across_cts 10 20000 0.5 0.5
+7 my_method across_cts 10 20000 0.5 0.5
+8 my_method across_cts 10 20000 0.5 0.5
+9 my_method across_cts 10 20000 0.5 0.5
+10 my_method across_cts 10 20000 0.5 0.5
+1 my_method across_cts 10 20000 0.5 0.7
+2 my_method across_cts 10 20000 0.5 0.7
+3 my_method across_cts 10 20000 0.5 0.7
+4 my_method across_cts 10 20000 0.5 0.7
+5 my_method across_cts 10 20000 0.5 0.7
+6 my_method across_cts 10 20000 0.5 0.7
+7 my_method across_cts 10 20000 0.5 0.7
+8 my_method across_cts 10 20000 0.5 0.7
+9 my_method across_cts 10 20000 0.5 0.7
+10 my_method across_cts 10 20000 0.5 0.7
+1 my_method across_cts 10 20000 0.7 0.15
+2 my_method across_cts 10 20000 0.7 0.15
+3 my_method across_cts 10 20000 0.7 0.15
+4 my_method across_cts 10 20000 0.7 0.15
+5 my_method across_cts 10 20000 0.7 0.15
+6 my_method across_cts 10 20000 0.7 0.15
+7 my_method across_cts 10 20000 0.7 0.15
+8 my_method across_cts 10 20000 0.7 0.15
+9 my_method across_cts 10 20000 0.7 0.15
+10 my_method across_cts 10 20000 0.7 0.15
+1 my_method across_cts 10 20000 0.7 0.3
+2 my_method across_cts 10 20000 0.7 0.3
+3 my_method across_cts 10 20000 0.7 0.3
+4 my_method across_cts 10 20000 0.7 0.3
+5 my_method across_cts 10 20000 0.7 0.3
+6 my_method across_cts 10 20000 0.7 0.3
+7 my_method across_cts 10 20000 0.7 0.3
+8 my_method across_cts 10 20000 0.7 0.3
+9 my_method across_cts 10 20000 0.7 0.3
+10 my_method across_cts 10 20000 0.7 0.3
+1 my_method across_cts 10 20000 0.7 0.5
+2 my_method across_cts 10 20000 0.7 0.5
+3 my_method across_cts 10 20000 0.7 0.5
+4 my_method across_cts 10 20000 0.7 0.5
+5 my_method across_cts 10 20000 0.7 0.5
+6 my_method across_cts 10 20000 0.7 0.5
+7 my_method across_cts 10 20000 0.7 0.5
+8 my_method across_cts 10 20000 0.7 0.5
+9 my_method across_cts 10 20000 0.7 0.5
+10 my_method across_cts 10 20000 0.7 0.5
+1 my_method across_cts 10 20000 0.7 0.7
+2 my_method across_cts 10 20000 0.7 0.7
+3 my_method across_cts 10 20000 0.7 0.7
+4 my_method across_cts 10 20000 0.7 0.7
+5 my_method across_cts 10 20000 0.7 0.7
+6 my_method across_cts 10 20000 0.7 0.7
+7 my_method across_cts 10 20000 0.7 0.7
+8 my_method across_cts 10 20000 0.7 0.7
+9 my_method across_cts 10 20000 0.7 0.7
+10 my_method across_cts 10 20000 0.7 0.7
+1 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+2 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+3 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+4 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+5 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+6 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+7 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+8 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+9 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+10 my_method within_one_ct 105 40000 0.15 0.15 cts_100
+1 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+2 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+3 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+4 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+5 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+6 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+7 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+8 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+9 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+10 my_method within_one_ct 105 40000 0.15 0.3 cts_100
+1 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+2 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+3 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+4 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+5 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+6 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+7 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+8 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+9 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+10 my_method within_one_ct 105 40000 0.15 0.5 cts_100
+1 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+2 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+3 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+4 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+5 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+6 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+7 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+8 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+9 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+10 my_method within_one_ct 105 40000 0.15 0.7 cts_100
+1 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+2 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+3 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+4 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+5 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+6 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+7 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+8 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+9 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+10 my_method within_one_ct 105 40000 0.3 0.15 cts_100
+1 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+2 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+3 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+4 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+5 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+6 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+7 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+8 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+9 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+10 my_method within_one_ct 105 40000 0.3 0.3 cts_100
+1 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+2 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+3 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+4 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+5 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+6 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+7 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+8 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+9 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+10 my_method within_one_ct 105 40000 0.3 0.5 cts_100
+1 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+2 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+3 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+4 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+5 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+6 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+7 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+8 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+9 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+10 my_method within_one_ct 105 40000 0.3 0.7 cts_100
+1 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+2 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+3 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+4 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+5 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+6 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+7 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+8 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+9 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+10 my_method within_one_ct 105 40000 0.5 0.15 cts_100
+1 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+2 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+3 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+4 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+5 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+6 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+7 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+8 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+9 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+10 my_method within_one_ct 105 40000 0.5 0.3 cts_100
+1 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+2 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+3 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+4 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+5 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+6 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+7 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+8 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+9 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+10 my_method within_one_ct 105 40000 0.5 0.5 cts_100
+1 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+2 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+3 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+4 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+5 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+6 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+7 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+8 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+9 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+10 my_method within_one_ct 105 40000 0.5 0.7 cts_100
+1 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+2 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+3 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+4 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+5 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+6 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+7 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+8 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+9 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+10 my_method within_one_ct 105 40000 0.7 0.15 cts_100
+1 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+2 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+3 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+4 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+5 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+6 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+7 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+8 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+9 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+10 my_method within_one_ct 105 40000 0.7 0.3 cts_100
+1 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+2 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+3 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+4 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+5 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+6 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+7 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+8 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+9 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+10 my_method within_one_ct 105 40000 0.7 0.5 cts_100
+1 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+2 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+3 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+4 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+5 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+6 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+7 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+8 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+9 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+10 my_method within_one_ct 105 40000 0.7 0.7 cts_100
+1 my_method across_cts 105 40000 0.15 0.15 cts_100
+2 my_method across_cts 105 40000 0.15 0.15 cts_100
+3 my_method across_cts 105 40000 0.15 0.15 cts_100
+4 my_method across_cts 105 40000 0.15 0.15 cts_100
+5 my_method across_cts 105 40000 0.15 0.15 cts_100
+6 my_method across_cts 105 40000 0.15 0.15 cts_100
+7 my_method across_cts 105 40000 0.15 0.15 cts_100
+8 my_method across_cts 105 40000 0.15 0.15 cts_100
+9 my_method across_cts 105 40000 0.15 0.15 cts_100
+10 my_method across_cts 105 40000 0.15 0.15 cts_100
+1 my_method across_cts 105 40000 0.15 0.3 cts_100
+2 my_method across_cts 105 40000 0.15 0.3 cts_100
+3 my_method across_cts 105 40000 0.15 0.3 cts_100
+4 my_method across_cts 105 40000 0.15 0.3 cts_100
+5 my_method across_cts 105 40000 0.15 0.3 cts_100
+6 my_method across_cts 105 40000 0.15 0.3 cts_100
+7 my_method across_cts 105 40000 0.15 0.3 cts_100
+8 my_method across_cts 105 40000 0.15 0.3 cts_100
+9 my_method across_cts 105 40000 0.15 0.3 cts_100
+10 my_method across_cts 105 40000 0.15 0.3 cts_100
+1 my_method across_cts 105 40000 0.15 0.5 cts_100
+2 my_method across_cts 105 40000 0.15 0.5 cts_100
+3 my_method across_cts 105 40000 0.15 0.5 cts_100
+4 my_method across_cts 105 40000 0.15 0.5 cts_100
+5 my_method across_cts 105 40000 0.15 0.5 cts_100
+6 my_method across_cts 105 40000 0.15 0.5 cts_100
+7 my_method across_cts 105 40000 0.15 0.5 cts_100
+8 my_method across_cts 105 40000 0.15 0.5 cts_100
+9 my_method across_cts 105 40000 0.15 0.5 cts_100
+10 my_method across_cts 105 40000 0.15 0.5 cts_100
+1 my_method across_cts 105 40000 0.15 0.7 cts_100
+2 my_method across_cts 105 40000 0.15 0.7 cts_100
+3 my_method across_cts 105 40000 0.15 0.7 cts_100
+4 my_method across_cts 105 40000 0.15 0.7 cts_100
+5 my_method across_cts 105 40000 0.15 0.7 cts_100
+6 my_method across_cts 105 40000 0.15 0.7 cts_100
+7 my_method across_cts 105 40000 0.15 0.7 cts_100
+8 my_method across_cts 105 40000 0.15 0.7 cts_100
+9 my_method across_cts 105 40000 0.15 0.7 cts_100
+10 my_method across_cts 105 40000 0.15 0.7 cts_100
+1 my_method across_cts 105 40000 0.3 0.15 cts_100
+2 my_method across_cts 105 40000 0.3 0.15 cts_100
+3 my_method across_cts 105 40000 0.3 0.15 cts_100
+4 my_method across_cts 105 40000 0.3 0.15 cts_100
+5 my_method across_cts 105 40000 0.3 0.15 cts_100
+6 my_method across_cts 105 40000 0.3 0.15 cts_100
+7 my_method across_cts 105 40000 0.3 0.15 cts_100
+8 my_method across_cts 105 40000 0.3 0.15 cts_100
+9 my_method across_cts 105 40000 0.3 0.15 cts_100
+10 my_method across_cts 105 40000 0.3 0.15 cts_100
+1 my_method across_cts 105 40000 0.3 0.3 cts_100
+2 my_method across_cts 105 40000 0.3 0.3 cts_100
+3 my_method across_cts 105 40000 0.3 0.3 cts_100
+4 my_method across_cts 105 40000 0.3 0.3 cts_100
+5 my_method across_cts 105 40000 0.3 0.3 cts_100
+6 my_method across_cts 105 40000 0.3 0.3 cts_100
+7 my_method across_cts 105 40000 0.3 0.3 cts_100
+8 my_method across_cts 105 40000 0.3 0.3 cts_100
+9 my_method across_cts 105 40000 0.3 0.3 cts_100
+10 my_method across_cts 105 40000 0.3 0.3 cts_100
+1 my_method across_cts 105 40000 0.3 0.5 cts_100
+2 my_method across_cts 105 40000 0.3 0.5 cts_100
+3 my_method across_cts 105 40000 0.3 0.5 cts_100
+4 my_method across_cts 105 40000 0.3 0.5 cts_100
+5 my_method across_cts 105 40000 0.3 0.5 cts_100
+6 my_method across_cts 105 40000 0.3 0.5 cts_100
+7 my_method across_cts 105 40000 0.3 0.5 cts_100
+8 my_method across_cts 105 40000 0.3 0.5 cts_100
+9 my_method across_cts 105 40000 0.3 0.5 cts_100
+10 my_method across_cts 105 40000 0.3 0.5 cts_100
+1 my_method across_cts 105 40000 0.3 0.7 cts_100
+2 my_method across_cts 105 40000 0.3 0.7 cts_100
+3 my_method across_cts 105 40000 0.3 0.7 cts_100
+4 my_method across_cts 105 40000 0.3 0.7 cts_100
+5 my_method across_cts 105 40000 0.3 0.7 cts_100
+6 my_method across_cts 105 40000 0.3 0.7 cts_100
+7 my_method across_cts 105 40000 0.3 0.7 cts_100
+8 my_method across_cts 105 40000 0.3 0.7 cts_100
+9 my_method across_cts 105 40000 0.3 0.7 cts_100
+10 my_method across_cts 105 40000 0.3 0.7 cts_100
+1 my_method across_cts 105 40000 0.5 0.15 cts_100
+2 my_method across_cts 105 40000 0.5 0.15 cts_100
+3 my_method across_cts 105 40000 0.5 0.15 cts_100
+4 my_method across_cts 105 40000 0.5 0.15 cts_100
+5 my_method across_cts 105 40000 0.5 0.15 cts_100
+6 my_method across_cts 105 40000 0.5 0.15 cts_100
+7 my_method across_cts 105 40000 0.5 0.15 cts_100
+8 my_method across_cts 105 40000 0.5 0.15 cts_100
+9 my_method across_cts 105 40000 0.5 0.15 cts_100
+10 my_method across_cts 105 40000 0.5 0.15 cts_100
+1 my_method across_cts 105 40000 0.5 0.3 cts_100
+2 my_method across_cts 105 40000 0.5 0.3 cts_100
+3 my_method across_cts 105 40000 0.5 0.3 cts_100
+4 my_method across_cts 105 40000 0.5 0.3 cts_100
+5 my_method across_cts 105 40000 0.5 0.3 cts_100
+6 my_method across_cts 105 40000 0.5 0.3 cts_100
+7 my_method across_cts 105 40000 0.5 0.3 cts_100
+8 my_method across_cts 105 40000 0.5 0.3 cts_100
+9 my_method across_cts 105 40000 0.5 0.3 cts_100
+10 my_method across_cts 105 40000 0.5 0.3 cts_100
+1 my_method across_cts 105 40000 0.5 0.5 cts_100
+2 my_method across_cts 105 40000 0.5 0.5 cts_100
+3 my_method across_cts 105 40000 0.5 0.5 cts_100
+4 my_method across_cts 105 40000 0.5 0.5 cts_100
+5 my_method across_cts 105 40000 0.5 0.5 cts_100
+6 my_method across_cts 105 40000 0.5 0.5 cts_100
+7 my_method across_cts 105 40000 0.5 0.5 cts_100
+8 my_method across_cts 105 40000 0.5 0.5 cts_100
+9 my_method across_cts 105 40000 0.5 0.5 cts_100
+10 my_method across_cts 105 40000 0.5 0.5 cts_100
+1 my_method across_cts 105 40000 0.5 0.7 cts_100
+2 my_method across_cts 105 40000 0.5 0.7 cts_100
+3 my_method across_cts 105 40000 0.5 0.7 cts_100
+4 my_method across_cts 105 40000 0.5 0.7 cts_100
+5 my_method across_cts 105 40000 0.5 0.7 cts_100
+6 my_method across_cts 105 40000 0.5 0.7 cts_100
+7 my_method across_cts 105 40000 0.5 0.7 cts_100
+8 my_method across_cts 105 40000 0.5 0.7 cts_100
+9 my_method across_cts 105 40000 0.5 0.7 cts_100
+10 my_method across_cts 105 40000 0.5 0.7 cts_100
+1 my_method across_cts 105 40000 0.7 0.15 cts_100
+2 my_method across_cts 105 40000 0.7 0.15 cts_100
+3 my_method across_cts 105 40000 0.7 0.15 cts_100
+4 my_method across_cts 105 40000 0.7 0.15 cts_100
+5 my_method across_cts 105 40000 0.7 0.15 cts_100
+6 my_method across_cts 105 40000 0.7 0.15 cts_100
+7 my_method across_cts 105 40000 0.7 0.15 cts_100
+8 my_method across_cts 105 40000 0.7 0.15 cts_100
+9 my_method across_cts 105 40000 0.7 0.15 cts_100
+10 my_method across_cts 105 40000 0.7 0.15 cts_100
+1 my_method across_cts 105 40000 0.7 0.3 cts_100
+2 my_method across_cts 105 40000 0.7 0.3 cts_100
+3 my_method across_cts 105 40000 0.7 0.3 cts_100
+4 my_method across_cts 105 40000 0.7 0.3 cts_100
+5 my_method across_cts 105 40000 0.7 0.3 cts_100
+6 my_method across_cts 105 40000 0.7 0.3 cts_100
+7 my_method across_cts 105 40000 0.7 0.3 cts_100
+8 my_method across_cts 105 40000 0.7 0.3 cts_100
+9 my_method across_cts 105 40000 0.7 0.3 cts_100
+10 my_method across_cts 105 40000 0.7 0.3 cts_100
+1 my_method across_cts 105 40000 0.7 0.5 cts_100
+2 my_method across_cts 105 40000 0.7 0.5 cts_100
+3 my_method across_cts 105 40000 0.7 0.5 cts_100
+4 my_method across_cts 105 40000 0.7 0.5 cts_100
+5 my_method across_cts 105 40000 0.7 0.5 cts_100
+6 my_method across_cts 105 40000 0.7 0.5 cts_100
+7 my_method across_cts 105 40000 0.7 0.5 cts_100
+8 my_method across_cts 105 40000 0.7 0.5 cts_100
+9 my_method across_cts 105 40000 0.7 0.5 cts_100
+10 my_method across_cts 105 40000 0.7 0.5 cts_100
+1 my_method across_cts 105 40000 0.7 0.7 cts_100
+2 my_method across_cts 105 40000 0.7 0.7 cts_100
+3 my_method across_cts 105 40000 0.7 0.7 cts_100
+4 my_method across_cts 105 40000 0.7 0.7 cts_100
+5 my_method across_cts 105 40000 0.7 0.7 cts_100
+6 my_method across_cts 105 40000 0.7 0.7 cts_100
+7 my_method across_cts 105 40000 0.7 0.7 cts_100
+8 my_method across_cts 105 40000 0.7 0.7 cts_100
+9 my_method across_cts 105 40000 0.7 0.7 cts_100
+10 my_method across_cts 105 40000 0.7 0.7 cts_100
