@@ -1,11 +1,5 @@
-module load Anaconda2/5.2.0
-source activate R_4.1.0_python_3.8.2
-# module load Anaconda3/5.2.0
-# source activate R_4.1.0_python_3.8.2
-#LSB_JOBINDEX=$1
-# load in the parameters
+#!/bin/bash
 param_line=`cat my_method.par | head -n $LSB_JOBINDEX | tail -n1`
-param_line=`cat across_cts_40000.par | head -n $LSB_JOBINDEX | tail -n1`
 
 PARAM1=`echo $param_line | awk '{ print $1 }'`
 PARAM2=`echo $param_line | awk '{ print $2 }'`
@@ -19,9 +13,6 @@ PARAM8=`echo $param_line | awk '{ print $8 }'`
 echo $PARAM1 $PARAM2 $PARAM3 $PARAM4 $PARAM5 $PARAM6 $PARAM7 $PARAM8
 
 Rscript Simulation.r $PARAM1 $PARAM2 $PARAM3 $PARAM4 $PARAM5 $PARAM6 $PARAM7 $PARAM8
-
-conda deactivate
-source activate scanpy_env_eris2
 
 python my_method.py $PARAM1 $PARAM2 $PARAM3 $PARAM4 $PARAM5 $PARAM6 $PARAM7 --flag_sim_100_cts $PARAM8
 

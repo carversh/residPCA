@@ -10,10 +10,10 @@ if (is.na(flag_sim_100_cts)){
     print("performing simulation on standard 7 Morabito cell types")
     
     # read in cell type proportions
-    ct_prop = read.table("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/ct_proportions.txt",header=TRUE, row.names=1)
+    ct_prop = read.table("ct_proportions.txt",header=TRUE, row.names=1)
 
     # read in overdispersion parameters
-    output = readRDS("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/fitted_parameters_Gamma_poiss.RDS")
+    output = readRDS("fitted_parameters_Gamma_poiss.RDS")
     overdispersion = output$overdispersion
     Mus = output$Mu
     
@@ -21,12 +21,10 @@ if (is.na(flag_sim_100_cts)){
     print("performing simulation on 100 cell types, synthetic")
     
     # read in cell type proportions
-    #ct_prop = read.table("/PHShome/sv433/scratch/MORABITO/RNA/ct_proportions_100_cts.txt",header=TRUE, row.names=1)
     ct_prop = read.table("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/ct_proportions_100_cts.txt",header=TRUE, row.names=1)
     
     # read in overdispersion parameters
-    output = readRDS("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/fitted_parameters_Gamma_poiss_100_cts.RDS")
-    #output = readRDS("/PHShome/sv433/scratch/MORABITO/RNA/fitted_parameters_Gamma_poiss_100_cts.RDS")
+    output = readRDS("fitted_parameters_Gamma_poiss_100_cts.RDS")
     overdispersion = output$overdispersion
     Mus = output$Mu
 }
@@ -323,15 +321,15 @@ if (method == "PCA"){
     colnames(metadata)[colnames(metadata) == "cell_type"] <- "celltype"
     print(glue("transposed data dim: {dim(unscaled_data)}"))
     if (is.na(flag_sim_100_cts)){
-        write.table(data.frame(ct_in_state = ct_in_state), file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/CT_IN_STATE_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
-        write.table(metadata, file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/METADATA_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
-        write.table(unscaled_data, file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
-        write.table(max_continuums, file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/MAX_CONTINUUM_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
+        write.table(data.frame(ct_in_state = ct_in_state), file=glue("CT_IN_STATE_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
+        write.table(metadata, file=glue("METADATA_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
+        write.table(unscaled_data, file=glue("{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
+        write.table(max_continuums, file=glue("MAX_CONTINUUM_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_cts_7.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
     } else {
-      write.table(data.frame(ct_in_state = ct_in_state), file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/CT_IN_STATE_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)  
-      write.table(metadata, file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/METADATA_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
-        write.table(max_continuums, file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/MAX_CONTINUUM_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
-        write.table(unscaled_data, file=glue("/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
+      write.table(data.frame(ct_in_state = ct_in_state), file=glue("CT_IN_STATE_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)  
+      write.table(metadata, file=glue("METADATA_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
+        write.table(max_continuums, file=glue("MAX_CONTINUUM_{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
+        write.table(unscaled_data, file=glue("{method}_{total_cells}_{seed}_{state_type}_{dim}_gene_{sub('[.]', 'p', perc_genes)}_cell_{sub('[.]', 'p', perc_cells)}_flag_{flag_sim_100_cts}.txt"), append = FALSE, sep = "\t", dec = ".",row.names = TRUE, col.names = TRUE)
     }
 } else if (method == "UMAP") {
     print("performing UMAP")
@@ -378,7 +376,7 @@ if (method == "PCA"){
 
 if (method != "cNMF" & method != "my_method"){
     # compute adjusted r squared
-    write.csv(max_continuums, "cond_seurat_state.csv", row.names = TRUE)
+    write.csv(max_continuums, "resid_seurat_state.csv", row.names = TRUE)
 
     r_sq = summary(lm(scale(max_continuums[,"State_1"]) ~ scale(embeddings[,1:dim(embeddings)[2]])) )$adj.r.sq
 
@@ -407,7 +405,7 @@ if (method != "cNMF" & method != "my_method"){
         df = data.frame(seed=seed, method=method, state_type=state_type, dim=dim, total_cells=total_cells, perc_genes=perc_genes, perc_cells=perc_cells, flag_sim_100_cts=flag_sim_100_cts,ct_in_state = paste(ct_in_state,collapse='_'), adj.rsq = r_sq, max.rsq =max(corr) , max.rsq_sub = max(sub_corr_sq), total_cells_can_occupy_state = total_cells_can_occupy_state, total_cells_occupy_state = floor(total_cells_state * state_info[[state]][2]), total_genes = M, total_genes_in_state = total_genes_in_state)
 
         # append run to output dataframe
-        write.table(df, file = "/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/output_my_method.txt", append = TRUE, quote = FALSE, sep = " ", row.names = FALSE, col.names = FALSE)
+        write.table(df, file = "output_my_method.txt", append = TRUE, quote = FALSE, sep = " ", row.names = FALSE, col.names = FALSE)
 
         output = list(embeddings=embeddings, max_continuums = max_continuums,ct_labels=ct_labels)
         # saveRDS(output, glue("{method}_{state_type}_allcts_{perc_genes}_{perc_cells}_seed{seed}_{total_cells}_dim{dim}.rds"))    
@@ -418,7 +416,7 @@ if (method != "cNMF" & method != "my_method"){
 
             print("100 cts within one ct")
                 # append run to output dataframe
-            write.table(df, file = "/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/output_my_method.txt", append = TRUE, quote = FALSE, sep = " ", row.names = FALSE, col.names = FALSE)
+            write.table(df, file = "output_my_method.txt", append = TRUE, quote = FALSE, sep = " ", row.names = FALSE, col.names = FALSE)
             #output = list(embeddings=embeddings, max_continuums = max_continuums,ct_labels=ct_labels,state_info_ct=state_info_ct)
             #saveRDS(output, glue("{method}_{state_type}_allcts_{perc_genes}_{perc_cells}_seed{seed}_{total_cells}_{flag_sim_100_cts}_dim{dim}.rds"))
         } else { #"across_cts"
@@ -427,7 +425,7 @@ if (method != "cNMF" & method != "my_method"){
 
             print("100 cts within one ct")
                 # append run to output dataframe
-            write.table(df, file = "/data/gusev/USERS/scarver/Gusev_Lab/Simulation/Gamma-Poisson/output_my_method.txt", append = TRUE, quote = FALSE, sep = " ", row.names = FALSE, col.names = FALSE)
+            write.table(df, file = "output_my_method.txt", append = TRUE, quote = FALSE, sep = " ", row.names = FALSE, col.names = FALSE)
             #output = list(embeddings=embeddings, max_continuums = max_continuums, ct_labels=ct_labels,state_info_ct=state_info_ct)
             #saveRDS(output, glue("{method}_{state_type}_allcts_{perc_genes}_{perc_cells}_seed{seed}_{total_cells}_{flag_sim_100_cts}_dim{dim}.rds"))
         }    

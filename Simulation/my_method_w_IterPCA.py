@@ -21,7 +21,6 @@ import statsmodels.api as sm
 # %%
 import sys
 sys.path.append("../residPCA/src") 
-
 from residPCA import *
 
 def main(args):
@@ -65,11 +64,9 @@ args = parser.parse_args()
 
 # Calling the main function with parsed arguments
 main(args)
-
-
-
+print(args.perc_genes)
 # %%
-max_continuum = pd.read_csv('../../Simulation/MAX_CONTINUUM_{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
+max_continuum = pd.read_csv('../../Simulation//MAX_CONTINUUM_{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
     args.method,
     args.total_cells,
     args.seed,
@@ -80,7 +77,7 @@ max_continuum = pd.read_csv('../../Simulation/MAX_CONTINUUM_{}_{}_{}_{}_{}_gene_
     args.flag_sim_100_cts
 ), sep='\t', header=0, index_col=0)
 # %%
-ct_in_state = pd.read_csv('../../Simulation/CT_IN_STATE_{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
+ct_in_state = pd.read_csv('../../Simulation//CT_IN_STATE_{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
     args.method,
     args.total_cells,
     args.seed,
@@ -134,14 +131,16 @@ variable_genes_flavor="seurat",
 global_ct_cutoff=0.2,
 logged=True)
 
-# %%
-# log normalize count data
+
+#log normalize count data
 my_method_light.Normalize()
 # # standardize count data and metadata
 my_method_light.Standardize()
 # # fit standard PCA
 my_method_light.StandardPCA_fit()
 my_method_light.residPCA_fit()
+my_method_light.Iter_PCA_fit()
+
 # %%
 def adj_rsq_compute(X_input):
     scaled_emb = (X_input - X_input.mean()) / X_input.std()
@@ -160,27 +159,28 @@ def adj_rsq_compute(X_input):
     return adj_r_squared
 
 def max_correlation_compute(X_input):
-    scaled_emb = (X_input - X_input.mean()) / X_input.std()
-    scaled_time = (max_continuum["State_1"] - max_continuum["State_1"].mean()) / max_continuum["State_1"].std()
+#    scaled_emb = (X_input - X_input.mean()) / X_input.std()
+#    scaled_time = (max_continuum["State_1"] - max_continuum["State_1"].mean()) / max_continuum["State_1"].std()
     # indices dont match so rename according to cell names (simulated)
-    scaled_time.index = scaled_emb.index
+#    scaled_time.index = scaled_emb.index
     # Initialize an empty list to store adjusted R-squared values
     corr = []
 
     # Fit separate linear regression models for each predictor variable
-    for column in scaled_emb.columns:
+    for column in X_input.columns:
         # Add constant column to predictor variable
-        X = sm.add_constant(scaled_emb[column])
-        # Fit linear regression model
-        model = sm.OLS(scaled_time, X).fit()
+        correlation = np.corrcoef(X_input[column], max_continuum["State_1"])[0, 1]
         # Append adjusted R-squared value to list
-        corr.append(model.rsquared_adj)
-    corr_series = pd.Series(corr, index=scaled_emb.columns)
+        corr.append(correlation**2)
+    corr_series = pd.Series(corr, index=X_input.columns)
     return np.max(corr_series)
 
-def max_correlation_compute_SUB(X_input):
+def max_correlation_compute_SUB(X_input, iter=False):
     #print(X_input.shape)
-    sub_embeddings = X_input.loc[(metadata["celltype"] == ct_in_state).values,:]
+    if iter:
+        sub_embeddings = X_input
+    else:
+        sub_embeddings = X_input.loc[(metadata["celltype"] == ct_in_state).values,:]
     #sub_embeddings = X_input.loc[metadata["celltype"] == ct_in_state,:]
     sub_state = max_continuum.loc[(metadata["celltype"] == ct_in_state).values,:]
     # indices dont match so rename according to cell names (simulated)
@@ -196,25 +196,39 @@ def max_correlation_compute_SUB(X_input):
         corr.append(correlation**2)
     corr_series = pd.Series(corr, index=sub_embeddings.columns)
     return np.max(corr_series)
-        # Add constant column to predictor variable
-   #     X = sm.add_constant(sub_embeddings[column])
-        # Fit linear regression model
-    #    model = sm.OLS(sub_state, sub_embeddings).fit()
-        # Append adjusted R-squared value to list
-     #   corr.append(model.rsquared_adj)
-   # corr_series = pd.Series(corr, index=scaled_emb.columns)
-   # return np.max(corr_series)
 
-# %%
-print(adj_rsq_compute(my_method_light.residPCA_cell_embeddings))
-print(adj_rsq_compute(my_method_light.StandardPCA_cell_embeddings))
+def max_correlation_iter_across_cts():
+    max_corr_per_ct = []
+    ct_prop = []
+    for ct in my_method_light.IterPCA_cell_embeddings.keys():
+        sub_embeddings = my_method_light.IterPCA_cell_embeddings[ct]
+        sub_state = max_continuum.loc[(metadata["celltype"] == ct).values,:]
+        # indices dont match so rename according to cell names (simulated)
+        sub_state.index = sub_embeddings.index
+        # Initialize an empty list to store adjusted R-squared values
+        corr = []
+
+        # Fit separate linear regression models for each predictor variable
+        for column in sub_embeddings.columns:
+            # Add constant column to predictor variable
+            correlation = np.corrcoef(sub_embeddings[column], sub_state["State_1"])[0, 1]
+            # Append adjusted R-squared value to list
+            corr.append(correlation**2)
+        corr_series = pd.Series(corr, index=sub_embeddings.columns)
+        # max corr weighted by prop of cells in ct
+        max = np.max(corr_series) 
+        ct_prop.append(sum((metadata["celltype"] == ct).values) / len(metadata))
+        max_corr_per_ct.append(max)
+    # after computing max corr per ct, compute weighted average
+    max_corr = np.dot(ct_prop, max_corr_per_ct)
+    return max_corr
+
 resid_adj = adj_rsq_compute(my_method_light.residPCA_cell_embeddings)
 stand_adj = adj_rsq_compute(my_method_light.StandardPCA_cell_embeddings)
 
-print(max_correlation_compute(my_method_light.residPCA_cell_embeddings))
-print(max_correlation_compute(my_method_light.StandardPCA_cell_embeddings))
 resid_max_corr = max_correlation_compute(my_method_light.residPCA_cell_embeddings)
 stand_max_corr = max_correlation_compute(my_method_light.StandardPCA_cell_embeddings)
+
 
 
 if args.state_type == "within_one_ct":
@@ -224,8 +238,27 @@ else:
     SUB_resid_max_corr = resid_max_corr
     SUB_stand_max_corr = stand_max_corr
 
-# %%
+# saving iterative correlation results
+if args.state_type == "within_one_ct":
+    iter_adj_rsq = 0
+    iter_max_corr = 0
+    iter_max_corr_SUB = max_correlation_compute_SUB(my_method_light.IterPCA_cell_embeddings[ct_in_state], iter=True)
+if args.state_type == "across_cts":
+    iter_max_corr = max_correlation_iter_across_cts()
+    iter_adj_rsq = 0
+    iter_max_corr_SUB = max_correlation_iter_across_cts()
 
+# compute correlation between ct and cell state
+# Step 1: Initialize column with all zeros
+metadata['ct_in_state_ind'] = 0
+
+# Step 2: Set to 1 where 'celltype' matches 'ct_in_state'
+metadata.loc[metadata['celltype'] == ct_in_state, 'ct_in_state_ind'] = 1
+
+corr_ct_st_cont = max_continuum["State_1"].reset_index(drop=True).corr(
+    metadata["ct_in_state_ind"].reset_index(drop=True)
+)
+# %%
 data = {
     "seed": [args.seed],
     "method": ["ResidPCA"],
@@ -236,6 +269,7 @@ data = {
     "perc_cells": [args.perc_cells],
     "flag": [args.flag_sim_100_cts],
     "ct_in_state": [ct_in_state],
+    "corr_ct_st": [corr_ct_st_cont],
     "adj.rsq": [resid_adj],
     "max.rsq": [resid_max_corr],
     "max.rsq_sub": [SUB_resid_max_corr],
@@ -245,22 +279,18 @@ data = {
     "total_genes_in_state": [math.floor(my_method_light.StandardPCA_gene_loadings.shape[0] * args.perc_genes)]
 }
 
-
-
 # %%
 # Create DataFrame from dictionary
 df = pd.DataFrame(data)
 
 # %%
 # Write DataFrame to file, append mode
-with open("output_my_method.txt", "a") as f:
+with open("../../Simulation/output_plus_IterPCA.txt", "a") as f:
     df.to_csv(f, sep=" ", header=False, index=False)
-
-# %%
 
 data = {
     "seed": [args.seed],
-    "method": [args.method],
+    "method": ["StandardPCA"],
     "state_type": [args.state_type],
     "dim": [args.dim],
     "total_cells": [args.total_cells],
@@ -268,6 +298,7 @@ data = {
     "perc_cells": [args.perc_cells],
     "flag": [args.flag_sim_100_cts],
     "ct_in_state": [ct_in_state],
+    "corr_ct_st": [corr_ct_st_cont],
     "adj.rsq": [stand_adj],
     "max.rsq": [stand_max_corr],
     "max.rsq_sub": [SUB_stand_max_corr],
@@ -277,53 +308,39 @@ data = {
     "total_genes_in_state": [math.floor(my_method_light.StandardPCA_gene_loadings.shape[0] * args.perc_genes)]
 }
 
-# %%
+
 # Create DataFrame from dictionary
 df = pd.DataFrame(data)
 
 # Write DataFrame to file, append mode
-with open("../../Simulation/output_my_method.txt", "a") as f:
+with open("../../Simulation/output_plus_IterPCA.txt", "a") as f:
+    df.to_csv(f, sep=" ", header=False, index=False)
+
+data = {
+    "seed": [args.seed],
+    "method": ["IterPCA"],
+    "state_type": [args.state_type],
+    "dim": [args.dim],
+    "total_cells": [args.total_cells],
+    "perc_genes": [args.perc_genes],
+    "perc_cells": [args.perc_cells],
+    "flag": [args.flag_sim_100_cts],
+    "ct_in_state": [ct_in_state],
+    "corr_ct_st": [corr_ct_st_cont],
+    "adj.rsq": [iter_adj_rsq],
+    "max.rsq": [iter_max_corr],
+    "max.rsq_sub": [iter_max_corr_SUB],
+    "total_cells_can_occupy_state": [math.floor(my_method_light.StandardPCA_cell_embeddings.loc[(metadata["celltype"] == ct_in_state).values,:].shape[0] )] if args.state_type == "within_one_ct" else [my_method_light.StandardPCA_cell_embeddings.shape[0]],
+    "total_cells_occupy_state": [math.floor(my_method_light.StandardPCA_cell_embeddings.loc[(metadata["celltype"] == ct_in_state).values,:].shape[0] * args.perc_cells)] if args.state_type == "within_one_ct" else [my_method_light.StandardPCA_cell_embeddings.shape[0]* args.perc_cells],
+    "total_genes": [my_method_light.StandardPCA_gene_loadings.shape[0]],
+    "total_genes_in_state": [math.floor(my_method_light.StandardPCA_gene_loadings.shape[0] * args.perc_genes)]
+}
+
+# Create DataFrame from dictionary
+df = pd.DataFrame(data)
+
+# Write DataFrame to file, append mode
+with open("../../Simulation/output_plus_IterPCA.txt", "a") as f:
     df.to_csv(f, sep=" ", header=False, index=False)
 
 
-# deleting tmp files
-os.remove('../../Simulation/MAX_CONTINUUM_{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
-    args.method,
-    args.total_cells,
-    args.seed,
-    args.state_type,
-    args.dim,
-    re.sub("[.]", "p", str(args.perc_genes)),
-    re.sub("[.]", "p", str(args.perc_cells)),
-    args.flag_sim_100_cts
-))
-os.remove('../../Simulation/CT_IN_STATE_{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
-    args.method,
-    args.total_cells,
-    args.seed,
-    args.state_type,
-    args.dim,
-    re.sub("[.]", "p", str(args.perc_genes)),
-    re.sub("[.]", "p", str(args.perc_cells)),
-    args.flag_sim_100_cts
-))
-os.remove('../../Simulation/METADATA_{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
-    args.method,
-    args.total_cells,
-    args.seed,
-    args.state_type,
-    args.dim,
-    re.sub("[.]", "p", str(args.perc_genes)),
-    re.sub("[.]", "p", str(args.perc_cells)),
-    args.flag_sim_100_cts
-))
-os.remove('../../Simulation/{}_{}_{}_{}_{}_gene_{}_cell_{}_flag_{}.txt'.format(
-    args.method,
-    args.total_cells,
-    args.seed,
-    args.state_type,
-    args.dim,
-    re.sub('[.]', 'p', str(args.perc_genes)),
-    re.sub('[.]', 'p', str(args.perc_cells)),
-    args.flag_sim_100_cts
-))
