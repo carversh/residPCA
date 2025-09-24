@@ -469,5 +469,20 @@ Cluster job submission script that automates running the single-cell simulation 
 ### `my_method.par` and `simulation.par`  
 Parameter files specifying the configurations used to run the simulations in the manuscript.  
 
+### Data Files
+
+### `fitted_parameters_Gamma_poiss.RDS` 
+  Contains the fitted **mean** and **overdispersion** parameters for 7 cell types from the Morabito et al. dataset.
+
+### `fitted_parameters_Gamma_poiss_100_cts.RDS`
+  Extended version of the above file. Includes the original 7 cell types plus 93 additional synthetic cell types, where parameters were sampled from a uniform distribution between the minimum and maximum values observed in `fitted_parameters_Gamma_poiss.RDS`.
+
+### `ct_proportions.txt`  
+  Cell type proportion estimates from the Morabito et al. dataset.
+
+### `ct_proportions_100.txt` 
+  Extended version of the above file. Includes the original 7 cell types plus 93 additional synthetic cell types, where proportions were sampled from a uniform distribution between the minimum and maximum values observed in `ct_proportions.txt`.
+
+
 
 
